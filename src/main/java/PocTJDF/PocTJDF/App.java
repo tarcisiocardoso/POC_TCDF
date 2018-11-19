@@ -1,6 +1,7 @@
 package PocTJDF.PocTJDF;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -49,9 +50,16 @@ public class App {
 	}};
 	
 	public static void main(String[] args) throws IOException {
-		InputStream in = new App().getClass().getResourceAsStream("properties.conf");
-		prop.load(in);
-		in.close();
+		
+		if( args.length == 0 ) {
+			System.out.println("Informe o arquivo de propriedade");
+		}
+		
+		FileInputStream propFile =
+	            new FileInputStream( args[0] );
+		
+		prop.load(propFile);
+		propFile.close();
 
 		System.out.println("===================");
 		System.out.println("lendo conteudo do diretorio: "+prop.getProperty("workdir"));
