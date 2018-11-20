@@ -172,10 +172,12 @@ public class DataBase {
 	public void insertObjeto(Registro reg) {
 		try {
 			if( reg.dado == null) reg.dado = "{}";
+			if( reg.tipo.length() >= 100) {
+				reg.tipo = reg.tipo.substring(0, 90)+"...";
+			}
+			
 			if( reg.id > 0 ) {
-				if( reg.tipo.length() > 100) {
-					reg.tipo = reg.tipo.substring(0, 90)+"...";
-				}
+				
 				pstmtUpdateRegra.clearParameters();
 				pstmtUpdateRegra.setString(1, reg.tipo);
 				pstmtUpdateRegra.setString(2, reg.dado); //, conteudo, dado
