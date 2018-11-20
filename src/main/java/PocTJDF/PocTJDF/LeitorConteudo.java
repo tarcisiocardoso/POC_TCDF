@@ -413,7 +413,7 @@ public class LeitorConteudo {
 			return regraFimComplexo.isFim();
 		}else { // se é necessario uma analise de fim complexo
 			String bloco = blocoDeDado.bloco.toString();
-			if( i >= linhas.length ) {
+			if( i+1 >= linhas.length ) {
 				fimComplexo = true;
 				return regraFimComplexo != null;
 			}
