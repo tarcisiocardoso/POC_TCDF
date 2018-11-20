@@ -172,7 +172,7 @@ public class DataBase {
 	public void insertObjeto(Registro reg) {
 		try {
 			if( reg.dado == null) reg.dado = "{}";
-			if( reg.tipo.length() >= 100) {
+			if( reg.tipo != null && reg.tipo.length() >= 100) {
 				reg.tipo = reg.tipo.substring(0, 90)+"...";
 			}
 			
