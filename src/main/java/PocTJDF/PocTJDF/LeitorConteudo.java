@@ -175,7 +175,6 @@ public class LeitorConteudo {
 	}
 */
 	private void montaDadoJson(BlocoDeDado b, SubGrupo sub) {
-		System.out.println(b.bloco.toString()); 
 		
 		if( sub.id == 0 ) {
 			sub.id = DataBase.getInstancia().insertSubGrupo(sub);

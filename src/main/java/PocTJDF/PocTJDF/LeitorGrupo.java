@@ -190,7 +190,7 @@ public class LeitorGrupo {
 				
 				String s = "";
 				int ii = i;
-				while( linhas[ii].toUpperCase().equals(linhas[ii]) && ii < linhas.length ) {
+				while( ii < linhas.length && linhas[ii].toUpperCase().equals(linhas[ii]) ) {
 					s += linhas[ii++];
 				}
 				if( !s.isEmpty() ) {

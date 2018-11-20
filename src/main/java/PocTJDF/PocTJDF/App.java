@@ -68,6 +68,7 @@ public class App {
 		File fs = new File(prop.getProperty("workdir"));//"/home/tarcisio/trabalho/EDS/projetos/TJDF/tmp");
 		for (File f : fs.listFiles()) {
 			if( f.getName().endsWith("pdf")) {
+				System.out.println(">>>>>>"+f.getName()+"<<<<<<<");
 				salvaArquivo( f.getName() );
 				if( !recuperaDadosPDF(f) ) {
 					//TODO implementar a leitura do aquivo por outra forma, exemplo ubuntu: "pdftotext file.pdf file.txt"
