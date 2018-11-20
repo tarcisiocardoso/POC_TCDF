@@ -67,6 +67,9 @@ public class DataBase {
 			if( rsq.next() ) {
 				return rsq.getLong("id");
 			}
+			if( sub.nome.length() > 200 ) {
+				sub.nome = sub.nome.substring(0, 150)+"...";
+			}
 			
 			pstmtSubGrupo.clearParameters();
 			pstmtSubGrupo.setLong(1, sub.idGrupo);
