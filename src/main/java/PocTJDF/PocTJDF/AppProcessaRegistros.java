@@ -146,6 +146,8 @@ public class AppProcessaRegistros {
 		
 		app.processa();
 		
+		System.out.println("===============");
+		
 	}
 	
 }
