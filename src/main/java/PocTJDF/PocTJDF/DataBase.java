@@ -233,7 +233,7 @@ public class DataBase {
 	public List<App.Registro> getRegistro(Arquivo a) {
 		List<App.Registro> lst = new ArrayList<Registro>();
 		try {
-			ResultSet rs = stmt.executeQuery("select id, idSubGrupo, tipo, conteudo from registro "); //where id = 7226");
+			ResultSet rs = stmt.executeQuery("select id, idSubGrupo, tipo, conteudo from registro limit 20"); //where id = 7226");
 			while( rs.next() ) {
 				App.Registro reg = new Registro();
 				int index = 1;
@@ -253,7 +253,7 @@ public class DataBase {
 		try {
 			ResultSet rs = stmt.executeQuery("select problema from grupo g\n" + 
 					"inner join subgrupo sb on sb.idgrupo = g.id\n" + 
-					"where sb.id = "+id );
+					"where sb.id = "+id +"");
 			if( rs.next() ) {
 				return rs.getString(1);
 			}
