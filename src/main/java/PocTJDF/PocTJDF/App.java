@@ -53,6 +53,7 @@ public class App {
 		
 		if( args.length == 0 ) {
 			System.out.println("Informe o arquivo de propriedade");
+			System.exit(1);
 		}
 		
 		FileInputStream propFile =
