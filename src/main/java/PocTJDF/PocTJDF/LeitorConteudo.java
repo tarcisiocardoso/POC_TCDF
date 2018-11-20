@@ -413,7 +413,11 @@ public class LeitorConteudo {
 			return regraFimComplexo.isFim();
 		}else { // se é necessario uma analise de fim complexo
 			String bloco = blocoDeDado.bloco.toString();
-			if(linhas[i+1].contains("_") || linhas[i+1].contains("*")) {
+			if( i >= linhas.length ) {
+				fimComplexo = true;
+				return regraFimComplexo != null;
+			}
+			if( linhas[i+1].contains("_") || linhas[i+1].contains("*")) {
 				fimComplexo = true;
 				regraFimComplexo = new FimCaracterMaluco();
 				return true;
