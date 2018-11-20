@@ -111,7 +111,13 @@ public class LeitorConteudo {
 		if( proximoSub != null) {
 			return proximoSub.linha;
 		}else {
+			
+			if( lstGrupo.size() == 0 ) {
+				return -1;
+			}
+				
 			return lstGrupo.get(lstGrupo.size()-1).linha;
+			
 		}
 	}
 	private SubGrupo proximoSubGrupo(int i) {
