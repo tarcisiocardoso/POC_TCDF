@@ -111,7 +111,7 @@ public class LeitorGrupo {
 				}
 			}else if( isSumario ) { //pode ser quebra de linha dentro de um grupo
 				if(checkNomeIsGrupo(linha)) { //se a linha tem substantivo em maiusculo, tem forte chance de ser um grupo
-					if( i+1 > linhas.length) continue;
+					if( i+1 >= linhas.length) continue;
 					
 					String linha2 = linhas[i+1];
 					pos = linha2.lastIndexOf(" ");
