@@ -100,7 +100,7 @@ public class LeitorSubGrupo {
 	}
 
 	private boolean verificaFimSubGrupo(int i) {
-		for(int ii=i; ii < i+5; ii++) {
+		for(int ii=i; ii < i+5 && ii < linhas.length; ii++) {
 			if( linhas[ii].toUpperCase().startsWith("PREGOEIR") || linhas[ii].toUpperCase().startsWith("DIRETOR") ) {
 				return true;
 			}
