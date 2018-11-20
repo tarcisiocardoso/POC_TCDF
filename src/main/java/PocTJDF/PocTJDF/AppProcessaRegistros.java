@@ -1,5 +1,7 @@
 package PocTJDF.PocTJDF;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -97,7 +99,7 @@ public class AppProcessaRegistros {
 				updateRegra( reg );
 				//break;
 			}else {
-				System.err.println("não implementado");
+				System.err.println(reg.tipo+" ->não implementado");
 			}
 		}
 	}
@@ -124,15 +126,25 @@ public class AppProcessaRegistros {
 		return null;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args)  throws IOException {
 		System.out.println("===============");
+		
+		if( args.length == 0 ) {
+			System.out.println("Informe o arquivo de propriedade");
+			System.exit(1);
+		}
+		
+		FileInputStream propFile =
+	            new FileInputStream( args[0] );
+		
+		App.prop.load(propFile);
+		propFile.close();
+		
 		AppProcessaRegistros app =new AppProcessaRegistros();
 		
 		app.preProcessa();
 		
 		app.processa();
-		
-		
 		
 	}
 	
