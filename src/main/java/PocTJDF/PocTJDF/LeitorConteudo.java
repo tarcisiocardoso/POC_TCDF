@@ -49,9 +49,6 @@ public class LeitorConteudo {
 			blocoDeDado = null;
 			for( int i= sub.linha+1; i< linhaProximoSub && i < linhas.length; i++) {
 				linha = linhas[i];
-				if( linha.indexOf("12361622149760002; 12362622149769534;")>=0 ) {
-					System.out.println("xxxxxx");
-				}
 				
 				if( fimDePagina(i) ) {
 					continue;
@@ -68,7 +65,6 @@ public class LeitorConteudo {
 					}
 				}
 				
-//				System.out.println( linha );
 				addBlocoDado(blocoDeDado);
 				
 				if( fimBloco(i)) {
@@ -167,8 +163,6 @@ public class LeitorConteudo {
 					}
 					if( devePularLinha ) continue;
 				}
-//				System.out.println( subGrupo );
-//				System.out.println("\t"+ linha + "["+i+"]" );
 				addBlocoDado(blocoDeDado);
 				
 				if( fimBloco()) {
@@ -200,7 +194,6 @@ public class LeitorConteudo {
 		String bloco = corrigeDado( b.bloco.toString() );
 		Object json = montaRecursivo(pai, bloco, "\\. ");
 		
-		System.out.println(json.toString() );
 		*/
 	}
 
@@ -231,7 +224,6 @@ public class LeitorConteudo {
 		
 		for(String m: macro) {
 			
-			System.out.println(m);
 			/*if( m.contains("; ")) {
 //				if( pai.has("nv1")) {
 					pai.append("nv1", montaRecursivo(new JSONObject(), m, "; "));

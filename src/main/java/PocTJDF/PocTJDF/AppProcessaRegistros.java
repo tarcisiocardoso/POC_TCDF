@@ -28,11 +28,13 @@ public class AppProcessaRegistros {
 		
 	}
 	
-	private void preProcessa() {
-		App.Arquivo a = new Arquivo();
+	private void preProcessa(App.Arquivo a) {
 		List<App.Registro> lst = DataBase.getInstancia().getRegistro( a );
 		
 		for( App.Registro reg: lst) {
+			if( reg.tipo == null) reg.tipo = ">>>INDEFINICO<<<";
+			
+			System.out.println(">>>> ["+reg.id+"] "+reg.tipo+"<<<<");
 			if( regTemProblema(reg ).contains("Fim da linha indetermiado") ) {
 				if( reg.conteudo.toUpperCase().contains("DISPENSA") ) {
 					if( reg.tipo.contains("EXTRATO")) {
@@ -89,8 +91,7 @@ public class AppProcessaRegistros {
 		
 		return problema == null ? "": problema;
 	}
-	public void processa() {
-		App.Arquivo a = new Arquivo();
+	public void processa(App.Arquivo a) {
 		List<App.Registro> lst = DataBase.getInstancia().getRegistro( a );
 		
 		for( App.Registro reg: lst) {
@@ -141,13 +142,21 @@ public class AppProcessaRegistros {
 		propFile.close();
 		
 		AppProcessaRegistros app =new AppProcessaRegistros();
-		
-		app.preProcessa();
-		
-		app.processa();
+		List<App.Arquivo> lst = app.getArquivos();
+		for( App.Arquivo arquivo: lst ) {
+			System.out.println(">>>>["+arquivo.id+"] "+arquivo.nome+"<<<<");
+			//app.preProcessa(arquivo);
+			
+			app.processa(arquivo);
+		}
 		
 		System.out.println("===============");
 		
+	}
+
+	private List<Arquivo> getArquivos() {
+		List<App.Arquivo> lst = DataBase.getInstancia().getArquivos();
+		return lst;
 	}
 	
 }

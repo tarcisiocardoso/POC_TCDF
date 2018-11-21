@@ -31,6 +31,7 @@ public class DataBase {
 	private DataBase() {
 		try {
 			Properties prop = App.prop;
+			System.out.println("conectando ao banco: "+prop.getProperty("url") );
 
 			Class.forName( prop.getProperty("driver"));
 
@@ -230,10 +231,30 @@ public class DataBase {
 		}
 	}
 
+	public List<App.Arquivo> getArquivos() {
+		List<App.Arquivo> lst = new ArrayList<Arquivo>();
+		try {
+			ResultSet rs = stmt.executeQuery("select * from arquivo"); //where id = 7226");
+			while( rs.next() ) {
+				App.Arquivo arquivo = new Arquivo();
+				int index = 1;
+				arquivo.id = rs.getLong(index++);
+				arquivo.nome = rs.getString(index++);
+				arquivo.problema = rs.getString(index++);
+				lst.add(arquivo);
+			}
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lst;
+	}
 	public List<App.Registro> getRegistro(Arquivo a) {
 		List<App.Registro> lst = new ArrayList<Registro>();
 		try {
-			ResultSet rs = stmt.executeQuery("select id, idSubGrupo, tipo, conteudo from registro limit 20"); //where id = 7226");
+			
+			ResultSet rs = stmt.executeQuery("select id, idSubGrupo, tipo, conteudo from registro where idSubGrupo in "
+					+ "( select id from subgrupo where idGrupo in (select id from grupo where idArquivo = "+a.id+"))"); //where id = 7226");
 			while( rs.next() ) {
 				App.Registro reg = new Registro();
 				int index = 1;
@@ -243,6 +264,7 @@ public class DataBase {
 				reg.conteudo   = rs.getString(index++);
 				lst.add(reg);
 			}
+			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

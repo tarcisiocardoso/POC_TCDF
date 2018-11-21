@@ -55,7 +55,7 @@ public class Util {
 			pos =0;
 
 			int init = pos;
-			while( !isNum(s.charAt(pos)) ) {
+			while( pos < s.length() && !isNum(s.charAt(pos)) ) {
 				pos++;
 				if( pos - init > 20) {
 					pos = -1;
@@ -69,10 +69,8 @@ public class Util {
 				}else if( s.indexOf('\n')> 0) {
 					s = s.substring(0, s.indexOf('\n'));
 				}
-				
 			}
 			json.put("processo", s);
-			
 		}
 	}
 	public void montaResponsavel(JSONObject json, Registro reg) {
@@ -203,10 +201,6 @@ public class Util {
 	public void montaValor(JSONObject json, Registro reg) {
 		String dado = reg.conteudo.replaceAll("-\n ", "");
 		
-//		if( dado.contains("R$ 8.000,00") ) {
-//			System.out.println("...");
-//		}
-		
 		if( dado.contains("R$") ) {
 			String valor = null;
 			String literal = null;
@@ -219,9 +213,13 @@ public class Util {
 				if( valor.endsWith(".")) valor = valor.substring(0, valor.length()-1 );
 				valor = valor.split("\n")[0];
 				
-				if( s.contains("(") && s.contains(")") ){
+				if( s.contains(")") && ( s.indexOf("(") < s.indexOf(")") ) ){
 					pos = s.indexOf("(");
-					s = s.substring(pos, s.indexOf(')')+1);
+					if (pos > s.length() ) {
+						literal = "";
+						return;
+					}
+					s = s.substring(pos, s.indexOf(')'));
 					literal = s;
 					literal = literal.replaceAll("\n", " ");
 				}
@@ -275,7 +273,6 @@ public class Util {
 
 			int init = pos;
 			while( !isNum(s.charAt(pos)) ) {
-				System.out.print(s.charAt(pos) );
 				pos++;
 				if( pos - init > 20) {
 					pos = -1;

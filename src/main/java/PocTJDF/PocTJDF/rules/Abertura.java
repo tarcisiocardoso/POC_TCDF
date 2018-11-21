@@ -100,7 +100,6 @@ public class Abertura extends Util implements Regra{
 				if( pos >= 0 ) {
 					//busca primeiro numero numerico
 					while( !isNum(s.charAt(pos)) ) {
-						System.out.print( s.charAt(pos) );
 						if(pos++ >= s.length()-1) {
 							pos = -1;
 							break;
@@ -160,9 +159,10 @@ public class Abertura extends Util implements Regra{
 				pos = s.indexOf(' ');
 				arr[0] = "R$ "+s.substring(0, pos).trim();
 				if( arr[0].endsWith(".")) arr[0] = arr[0].substring(0, arr[0].length()-1 );
-				if( s.contains("(") && s.contains(")") ){
+				if( s.contains(")") && (s.indexOf("(") < s.indexOf(")") )){
+					
 					pos = s.indexOf("(");
-					s = s.substring(pos, s.indexOf(')')+1);
+					s = s.substring(pos, s.indexOf(')'));
 					arr[1] = s;
 					arr[1] = arr[1].replaceAll("\n", " ");
 				}
@@ -193,7 +193,6 @@ public class Abertura extends Util implements Regra{
 						pos = 11;
 						//procurando :
 						while( s.charAt(pos) != ':' ) {
-							System.out.print( s.charAt(pos) );
 							pos++;
 							if( pos >= s.length()) {
 								pos = -1;
@@ -223,14 +222,14 @@ public class Abertura extends Util implements Regra{
 		if( dado.contains("DODF")) {
 			int pos = dado.indexOf("DODF");
 			int init = pos;
-			while( !isNum(dado.charAt(pos)) ) {
+			while( pos < dado.length() && !isNum(dado.charAt(pos)) ) {
 				pos++;
 				if( pos - init > 20) {
 					pos = -1;
 					break;
 				}
 			}
-			if( pos >= 0 ) {
+			if( pos >= 0 && pos < dado.length()) {
 				String s = dado.substring(pos, pos+10);
 				if( s.indexOf(' ') > 0 ) {
 					s = s.substring(0, s.indexOf(' '));

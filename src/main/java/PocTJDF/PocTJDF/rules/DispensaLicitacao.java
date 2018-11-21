@@ -7,7 +7,6 @@ import PocTJDF.PocTJDF.App.Registro;
 public class DispensaLicitacao extends Util implements Regra{
 
 	public Regra execute(Registro reg) {
-		System.out.println( reg.conteudo );
 		
 		JSONObject json = new JSONObject();
 		

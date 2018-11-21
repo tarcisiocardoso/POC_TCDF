@@ -58,16 +58,21 @@ public class Inexigibilidade extends Util implements Regra{
 		for(String s: arr) {
 			s = s.trim();
 			if( key == null ) {
-				key = s.substring(s.lastIndexOf(" "), s.length() );
+				if( s.lastIndexOf(" ") < 0 ) {
+					if( s.contains(";")) {
+						key = s.substring(s.lastIndexOf(";"), s.length() );
+					}else {
+						key = s.substring(0, s.length() );
+					}
+				}else {
+					key = s.substring(s.lastIndexOf(" "), s.length() );
+				}
 				key = key.toLowerCase().trim();
 				if( !isValidKeyValorGeral(key ) ) {
 					key = null;
 					continue;
 				}
 			}else {
-				if( key.trim().equals("22")) {
-					System.out.println(".xxxx...");
-				}
 				if( s.indexOf(".") > 0 ) {
 					valor = s.substring(0, s.indexOf("."));
 					
