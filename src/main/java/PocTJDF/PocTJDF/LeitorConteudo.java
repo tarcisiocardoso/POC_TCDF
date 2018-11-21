@@ -81,6 +81,8 @@ public class LeitorConteudo {
 		}
 		if( linha.contains("ÁGINA") ) {
 			int pos = linha.indexOf("ÁGINA");
+			if( pos + 9 > linha.length() )return true;
+			
 			String s = linha.substring(pos+5, pos+5+3 ).trim();
 			try {
 				Integer.parseInt(s);
