@@ -200,7 +200,6 @@ public class Util {
 
 	public void montaValor(JSONObject json, Registro reg) {
 		String dado = reg.conteudo.replaceAll("-\n ", "");
-		
 		if( dado.contains("R$") ) {
 			String valor = null;
 			String literal = null;
@@ -209,6 +208,9 @@ public class Util {
 			if( pos > 0 ) {
 				String s = dado.substring(pos+2, dado.length()).trim();
 				pos = s.indexOf(' ');
+				if( pos < 0 ) {
+					//TODO implementar quando não existe espaço em branco.
+				}
 				valor = s.substring(0, pos).trim();
 				if( valor.endsWith(".")) valor = valor.substring(0, valor.length()-1 );
 				valor = valor.split("\n")[0];

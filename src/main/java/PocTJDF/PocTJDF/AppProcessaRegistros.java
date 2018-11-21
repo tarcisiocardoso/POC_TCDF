@@ -2,6 +2,8 @@ package PocTJDF.PocTJDF;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 
@@ -111,7 +113,19 @@ public class AppProcessaRegistros {
 
 	private boolean execRegra(Regra r, App.Registro reg) {
 		if( r != null ) {
-			Regra proxima = r.execute(reg);
+			Regra proxima = null;
+			try {
+				proxima = r.execute(reg);
+			}catch(Exception e ) {
+				System.err.println( "ERRO "+r.getClass().getName()+": "+reg.id+": "+e.getMessage());
+				
+				StringWriter sw = new StringWriter();
+		        e.printStackTrace(new PrintWriter(sw));
+		        String exceptionAsString = sw.toString();
+		        System.err.println(exceptionAsString);
+		           
+				System.err.println( ">>>ERRO FIM<<<");
+			}
 			if(proxima != null) {
 				return execRegra(proxima, reg);
 			}
