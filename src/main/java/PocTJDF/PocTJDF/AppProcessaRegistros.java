@@ -145,7 +145,8 @@ public class AppProcessaRegistros {
 		List<App.Arquivo> lst = app.getArquivos();
 		for( App.Arquivo arquivo: lst ) {
 			System.out.println(">>>>["+arquivo.id+"] "+arquivo.nome+"<<<<");
-			//app.preProcessa(arquivo);
+			
+			app.preProcessa(arquivo);
 			
 			app.processa(arquivo);
 		}

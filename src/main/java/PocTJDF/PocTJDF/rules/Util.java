@@ -92,7 +92,7 @@ public class Util {
 							nome = arr[i-1];
 							break;
 						}
-					}else if( arr[i-1].toUpperCase().equals(arr[i-1])) {
+					}else if( i > 0 && arr[i-1].toUpperCase().equals(arr[i-1])) {
 						nome = arr[i-1];
 						break;
 					}
