@@ -102,7 +102,7 @@ public class AppProcessaRegistros {
 				updateRegra( reg );
 				//break;
 			}else {
-				System.err.println(reg.tipo+" ->não implementado");
+//				System.err.println(reg.tipo+" ->não implementado");
 			}
 		}
 	}

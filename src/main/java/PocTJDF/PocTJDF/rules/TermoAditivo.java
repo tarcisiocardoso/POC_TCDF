@@ -10,8 +10,6 @@ public class TermoAditivo extends Util implements Regra{
 		
 		JSONObject json = new JSONObject();
 		
-		//json.put("TermoAditivo", "não implementado");
-		
 		reg.dado = json.toString();
 		
 		return null;
