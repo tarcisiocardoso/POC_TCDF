@@ -10,8 +10,6 @@ public class LeitorSubGrupo {
 
 	String linha = null;
 	public String[] linhas;
-	static List<App.Grupo> lstGrupo = null;
-	static List<SubGrupo> lstSubGrupo = new ArrayList<App.SubGrupo>();
 	
 	String palavraRestritiva[] = new String[]{
 		"LICITAÇÃO", "EXTRATO", "AVISO", "PREGÃO", "RETIFICAÇÃO",
@@ -20,15 +18,13 @@ public class LeitorSubGrupo {
 		"UASG", "LTDA"
 	};
 
-	public void montaSubGrupo( List<App.Grupo> lst) {
-		
-		lstGrupo = lst;
+	public void montaSubGrupo( ) {
 		int init = App.paginaSecaoIII+1;
-		for( Grupo g: lstGrupo) {
+		for( Grupo g: App.lstGrupo) {
 			
 			for( int i= init; i< g.linha; i++) {
 				linha = linhas[i];
-				if( linha.indexOf("12361622149760002; 12362622149769534;")>=0 ) {
+				if( linha.indexOf("MUNICAÇÃO INSTITUCIONAL E INTERAÇÃO SOCIAL DA GOVERNADORIA")>=0 ) {
 					System.out.println("xxxxxx");
 				}
 				if( linha.toUpperCase().equals(linha )) {
@@ -39,7 +35,7 @@ public class LeitorSubGrupo {
 					sg.idGrupo = g.id;
 					sg.nome = linha;
 					sg.linha = i;
-					lstSubGrupo.add(sg);
+					App.lstSubGrupo.add(sg);
 				}
 			}
 			init = buscaProximaLinha(g);//g.linha+1;
@@ -53,17 +49,17 @@ public class LeitorSubGrupo {
 	private void reavaliaSubGrupo() {
 
 		List<SubGrupo> lst= new ArrayList<App.SubGrupo>();
-		for( SubGrupo sg: lstSubGrupo ) {
+		for( SubGrupo sg: App.lstSubGrupo ) {
 			if( isProximoGrupo(sg) ) continue;
 			if( isProximoSubGrupo(sg ) ) continue;
 			lst.add(sg);
 		}
-		lstSubGrupo = lst;
+		App.lstSubGrupo = lst;
 	}
 
 
 	private boolean isProximoSubGrupo(SubGrupo sg) {
-		for( SubGrupo ss: lstSubGrupo ) {
+		for( SubGrupo ss: App.lstSubGrupo ) {
 //			if( ss.nome.equals("ADMINISTRAÇÃO REGIONAL DE BRAZLÂNDIA")) {
 //				System.out.println();
 //			}
@@ -76,7 +72,7 @@ public class LeitorSubGrupo {
 
 
 	private boolean isProximoGrupo(SubGrupo sg) {
-		for( Grupo g: lstGrupo) {
+		for( Grupo g: App.lstGrupo) {
 			if( sg.linha == g.linha ) return true;
 			if( sg.linha < g.linha && sg.linha+3 >= g.linha)  return true;
 		}
@@ -119,7 +115,7 @@ public class LeitorSubGrupo {
 			if( linha.indexOf(s)>= 0 ) return true;
 		}
 		
-		for(Grupo g: lstGrupo ) {
+		for(Grupo g: App.lstGrupo ) {
 			if( g.nome.indexOf(linha)>= 0 ) return true;
 		}
 		if( linha.split("/").length > 1 ) return true;

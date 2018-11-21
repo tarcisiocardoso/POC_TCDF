@@ -10,9 +10,6 @@ public class LeitorGrupo {
 
 	static String linhas[] = null;
 	static String linha = null;
-	static Arquivo arquivo;
-	
-	static List<App.Grupo> lstGrupo = new ArrayList<App.Grupo>();
 	
 	public void montaGrupo() {
 		boolean isSumario = false;
@@ -28,6 +25,11 @@ public class LeitorGrupo {
 			
 			if( isSumario && linha.endsWith("PÁGINA 2") ) {
 				break;
+			}else {
+				//se passou da pagina 100 e ainda não econtrou o sumario
+				if( i > 200) {
+					break;
+				}
 			}
 			
 			int pos = linha.lastIndexOf(" ");
@@ -38,10 +40,10 @@ public class LeitorGrupo {
 					if( linha.indexOf("...")> 0 && numero > 0 ) {
 						pos = linha.indexOf(".");
 						App.Grupo g = new Grupo();
-						g.idArquivo = (Long)arquivo.id;
+						g.idArquivo = (Long)App.arquivo.id;
 						g.nome = linha.substring(0, pos ).toUpperCase().trim();
 						g.pagina = numero;
-						lstGrupo.add(g);
+						App.lstGrupo.add(g);
 					}else if( isSumario ) { //pode ser quebra de linha dentro de um grupo
 						if(checkNomeIsGrupo(linha)) { //se a linha tem substantivo em maiusculo, tem forte chance de ser um grupo
 							String linha2 = linhas[i+1];
@@ -52,20 +54,20 @@ public class LeitorGrupo {
 								
 								pos = linha2.indexOf(".");
 								App.Grupo g = new Grupo();
-								g.idArquivo = (Long)arquivo.id;
+								g.idArquivo = (Long)App.arquivo.id;
 								g.nome = linha+ "\n"+ linha2.substring(0, pos ).trim().toUpperCase();
 								g.pagina = numero;
-								lstGrupo.add(g);
+								App.lstGrupo.add(g);
 								i++;
 							}
 						}else { //se é numero e esta dentro do sumario
 							linha = linha.replaceAll(" ", "").trim();
 							Integer.parseInt(linha ); // se toda a linha é numero, indica uma quebra de sumario
 							linha =linhas[i-1].replaceAll("\\.", "");
-							if( !linha.equals( lstGrupo.get(lstGrupo.size()-1).nome)) { //procura o grupo que ficou para traz. Para simplificar proucra apenas duas linhas para traz
+							if( !linha.equals( App.lstGrupo.get(App.lstGrupo.size()-1).nome)) { //procura o grupo que ficou para traz. Para simplificar proucra apenas duas linhas para traz
 								 String nome = linha;
 								 linha =linhas[i-2].replaceAll("\\.", "");
-								 if( !linha.equals( lstGrupo.get(lstGrupo.size()-1).nome)) {
+								 if( !linha.equals( App.lstGrupo.get(App.lstGrupo.size()-1).nome)) {
 									 if( linha.endsWith("-")) {
 										 linha = linha.replaceAll("-", "");
 										 nome = linha+nome;
@@ -74,10 +76,10 @@ public class LeitorGrupo {
 									 }
 								 }
 								 App.Grupo g = new Grupo();
-								g.idArquivo = (Long)arquivo.id;
+								g.idArquivo = (Long)App.arquivo.id;
 								g.nome = nome.trim().toUpperCase();
 								g.pagina = numero;
-								lstGrupo.add(g);
+								App.lstGrupo.add(g);
 							}
 							
 						}
@@ -97,11 +99,11 @@ public class LeitorGrupo {
 								
 								pos = linha2.indexOf(".");
 								App.Grupo g = new Grupo();
-								g.idArquivo = (Long)arquivo.id;
-								g.linha = lstGrupo.size() + 1;
+								g.idArquivo = (Long)App.arquivo.id;
+								g.linha = App.lstGrupo.size() + 1;
 								g.nome = (linha+ "\n"+ linha2.substring(0, pos )).trim().toUpperCase();
 								g.pagina = pagina;
-								lstGrupo.add(g);
+								App.lstGrupo.add(g);
 								i++;
 							}catch(Exception e2) {
 							}
@@ -122,11 +124,11 @@ public class LeitorGrupo {
 							
 							pos = linha2.indexOf(".");
 							App.Grupo g = new Grupo();
-							g.idArquivo = (Long)arquivo.id;
-							g.linha = lstGrupo.size() + 1;
+							g.idArquivo = (Long)App.arquivo.id;
+							g.linha = App.lstGrupo.size() + 1;
 							g.nome = linha+ "\n"+ linha2.substring(0, pos ).toUpperCase();
 							g.pagina = pagina;
-							lstGrupo.add(g);
+							App.lstGrupo.add(g);
 						}catch(Exception e) {}
 					}
 					
@@ -144,7 +146,7 @@ public class LeitorGrupo {
 	}
 	
 	private void reestruturaSeGrupoTerminaNaPagina() {
-		for (Grupo g : lstGrupo) {
+		for (Grupo g : App.lstGrupo) {
 			if( g.linha+1 < linhas.length ) {
 				if( linhas[g.linha+1].indexOf("PÁGINA") > 0 ) {
 					//g.linha += 4;
@@ -155,7 +157,7 @@ public class LeitorGrupo {
 	}
 
 	private void salvaBanco() {
-		for (Grupo g : lstGrupo) {
+		for (Grupo g : App.lstGrupo) {
 			inserir(g);
 		}
 	}
@@ -167,7 +169,7 @@ public class LeitorGrupo {
 			if( isIgnoraLinha() ) continue;
 			
 			if (linha.toUpperCase().equals(linha)) { // pode ser um grupo
-				for (Grupo g : lstGrupo) {
+				for (Grupo g : App.lstGrupo) {
 
 					if (linha.equals(g.nome)) {
 						g.linha = i;
@@ -181,7 +183,7 @@ public class LeitorGrupo {
 				}
 			}
 		}
-		lstGrupo = lst;
+		App.lstGrupo = lst;
 	}
 
 	private boolean verificacaoComplexa(String ln, Grupo g, int i) {
@@ -228,7 +230,7 @@ public class LeitorGrupo {
 	}
 
 	private void montResumo() {
-		for( Grupo g: lstGrupo) {
+		for( Grupo g: App.lstGrupo) {
 			g.resumo = g.nome.replaceAll("\n", "");
 			g.resumo = g.resumo.replaceAll(" ", "");
 		}		

@@ -200,10 +200,10 @@ public class Util {
 
 	public void montaValor(JSONObject json, Registro reg) {
 		String dado = reg.conteudo.replaceAll("-\n ", "");
+		String valor = null;
+		String literal = ">>não implementado<<<";//TODO implementar o valor literal
+		
 		if( dado.contains("R$") ) {
-			String valor = null;
-			String literal = null;
-			
 			int pos = dado.indexOf("R$");
 			if( pos > 0 ) {
 				String s = dado.substring(pos+2, dado.length()).trim();
@@ -226,9 +226,32 @@ public class Util {
 					literal = literal.replaceAll("\n", " ");
 				}
 			}
-			if( valor != null ) json.put("valor", valor);
-			if( literal != null) json.put("valorLiteral", literal );
+		}else if( dado.toUpperCase().contains("VALOR") ){
+			int pos = dado.toUpperCase().indexOf("VALOR")+5;
+			String s = dado.substring(pos, dado.length() );
+			
+			pos =0;
+			while(pos < s.length() && !isNum(s.charAt(pos)) ) {
+				System.out.print( s.charAt(pos) );
+				pos++;
+			}
+			if( pos >= 0 && pos < s.length() ) {
+				s = s.substring(pos, s.length() );
+				
+				if( s.indexOf(' ') > 0 ) {
+					s = s.substring(0, s.indexOf(' '));
+				}
+				if( s.indexOf('\n')> 0) {
+					s = s.substring(0, s.indexOf('\n'));
+				}
+				if( s.startsWith(";")) s = s.substring(1, s.length());
+				
+				s = s.trim();
+				valor =s ;
+			}
 		}
+		if( valor != null ) json.put("valor", valor);
+		if( literal != null) json.put("valorLiteral", literal );
 	}
 	public void montaCNPJ(JSONObject json, Registro reg) {
 		String dado =  reg.conteudo.replaceAll("\n", "");

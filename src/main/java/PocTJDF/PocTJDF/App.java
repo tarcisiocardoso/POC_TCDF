@@ -2,6 +2,7 @@ package PocTJDF.PocTJDF;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -68,6 +69,8 @@ public class App {
 		
 		File fs = new File(prop.getProperty("workdir"));//"/home/tarcisio/trabalho/EDS/projetos/TJDF/tmp");
 		for (File f : fs.listFiles()) {
+			App.lstGrupo.clear();
+			App.lstSubGrupo.clear();
 			if( f.getName().endsWith("pdf")) {
 				System.out.println("["+(index++)+"] >>>>>>"+f.getName()+"<<<<<<<");
 				salvaArquivo( f.getName() );
@@ -77,10 +80,9 @@ public class App {
 				}
 				leitorGrupo.montaGrupo();
 				if( App.paginaSecaoIII == 0 ) continue;
-				leitorSubGrupo.montaSubGrupo( leitorGrupo.lstGrupo );
+				leitorSubGrupo.montaSubGrupo( );
 				
 				leitorConteudo.ler();
-				//ler(f);
 			}
 		}
 		System.out.println("===========================");
@@ -95,7 +97,12 @@ public class App {
 			PDFTextStripper pdfStripper = new PDFTextStripper();
 			
 			String text = pdfStripper.getText(document);
-						
+			
+//			File out = new File("/home/tarcisio/trabalho/tmp/poc_tcdf/fonte/out.txt");
+//			FileWriter writer = new FileWriter(out);
+//			writer.write( text);
+//			writer.close();
+//			
 			linhas = text.split("\n");
 			
 			document.close();
@@ -115,8 +122,6 @@ public class App {
 		arquivo = new Arquivo();
 		arquivo.id = id;
 		arquivo.nome = nome;
-		
-		leitorGrupo.arquivo = arquivo;
 	}
 	
 	public static class Arquivo{

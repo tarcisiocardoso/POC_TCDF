@@ -15,8 +15,6 @@ public class LeitorConteudo {
 
 	public String linha;
 	public String[] linhas;
-	public List<App.Grupo> lstGrupo;
-	public List<SubGrupo> lstSubGrupo;
 	public List<JSONObject> lstJson = new ArrayList<JSONObject>();
 	boolean fimComplexo = false;
 	BlocoDeDado blocoDeDado = null;
@@ -37,19 +35,19 @@ public class LeitorConteudo {
 		if( App.paginaSecaoIII == 0 ) return;
 		
 		linhas = App.linhas;
-		lstGrupo = LeitorGrupo.lstGrupo;
-		lstSubGrupo = LeitorSubGrupo.lstSubGrupo;
 		
 //		int init = App.paginaSecaoIII+1;
 		int index = 0;
-		for( SubGrupo sub: lstSubGrupo) {
+		for( SubGrupo sub: App.lstSubGrupo) {
 			SubGrupo proximoSub = proximoSubGrupo(++index);
 			int linhaProximoSub = getLinhaProximoSubGrupo(proximoSub);
 			boolean isPrimeiraLinha = true;
 			blocoDeDado = null;
 			for( int i= sub.linha+1; i< linhaProximoSub && i < linhas.length; i++) {
 				linha = linhas[i];
-				
+				if( linha.contains("O BRB - BANCO DE BRASÍLIA S.A. torna público que a Comissão Administrativa da")) {
+					System.out.println("zzzz");
+				}
 				if( fimDePagina(i) ) {
 					continue;
 				}
@@ -81,11 +79,25 @@ public class LeitorConteudo {
 				return true;
 			}
 		}
-		if( linha.contains("PÁGINA") ) {
-			return true;
+		if( linha.contains("ÁGINA") ) {
+			int pos = linha.indexOf("ÁGINA");
+			String s = linha.substring(pos+5, pos+5+3 ).trim();
+			try {
+				Integer.parseInt(s);
+				return true;
+			}catch( Exception e) {}
+			
+			return false;
 		}
-		if( linhas[i-1].contains("PÁGINA") ) {
-			return true;
+		if( linhas[i-1].contains("ÁGINA") ) {
+			int pos = linhas[i-1].indexOf("ÁGINA");
+			String s = linhas[i-1].substring(pos+5, pos+5+3 ).trim();
+			try {
+				Integer.parseInt(s);
+				return true;
+			}catch( Exception e) {}
+			
+			return false;
 		}
 		if( linha.endsWith("ICP-Brasil.")) {
 			return true;
@@ -108,76 +120,33 @@ public class LeitorConteudo {
 			return proximoSub.linha;
 		}else {
 			
-			if( lstGrupo.size() == 0 ) {
+			if( App.lstGrupo.size() == 0 ) {
 				return -1;
 			}
 				
-			return lstGrupo.get(lstGrupo.size()-1).linha;
+			return App.lstGrupo.get(App.lstGrupo.size()-1).linha;
 			
 		}
 	}
 	private SubGrupo proximoSubGrupo(int i) {
-		if( i < lstSubGrupo.size() ) {
-			return lstSubGrupo.get(i);
+		if( i < App.lstSubGrupo.size() ) {
+			return App.lstSubGrupo.get(i);
 		}
 		return null;
 	}
-	
-	/*
-	public void ler2() {
-		linhas = App.linhas;
-		lstGrupo = LeitorGrupo.lstGrupo;
-		lstSubGrupo = LeitorSubGrupo.lstSubGrupo;
-		
-		int init = App.paginaSecaoIII+1;
-		for( int index=0; index< lstGrupo.size(); index++) {
-			Grupo g = lstGrupo.get(index);
-			if( index != 1) {
-				init = g.linha+1;
-				continue;
-			}
-			
-			List<SubGrupo> lst = buscaSubGrupoDoGrupo(g);
-			SubGrupo subGrupo = null;
-			boolean startBloco = false;
-			devePularLinha = true;
-			tipo = null;
-			BlocoDeDado blocoDeDado = null;
-			for( int i= init; i< g.linha; i++) {
-				linha = linhas[i];
-				
-				SubGrupo sg = subGrupoAtual(lst, i);
-				if( sg != null) {
-					if( subGrupo != null && subGrupo != sg) {//subgrupo mudou sem identificar fim de bloco
-						System.err.println("mudanca nao prevista do grupo");
-					}else {
-						subGrupo = sg;
-					}
-				}
-				
-				if( !startBloco ) {
-					if (verificaInicioBloco(i, subGrupo) ) {
-						startBloco = true;
-						blocoDeDado = new BlocoDeDado();
-						blocoDeDado.tipo = tipo;
-					}
-					if( devePularLinha ) continue;
-				}
-				addBlocoDado(blocoDeDado);
-				
-				if( fimBloco()) {
-					montaDadoJson( blocoDeDado );
-					startBloco = false;
-				}
-			}
-			init = g.linha+1;
-		}		
-	}
-*/
+
 	private void montaDadoJson(BlocoDeDado b, SubGrupo sub) {
 		
 		if( sub.id == 0 ) {
 			sub.id = DataBase.getInstancia().insertSubGrupo(sub);
+		}
+		if( modalidade == null) {
+			String linha = linhas[sub.linha-1];
+			if( b.bloco.toString().contains("CHAMAMENTO")) {
+				modalidade = "CHAMAMENTO";
+			}else {
+				modalidade = linha;
+			}
 		}
 		
 		Registro registro =new Registro();
@@ -187,14 +156,14 @@ public class LeitorConteudo {
 		registro.dado = "{}";
 		
 		DataBase.getInstancia().insertObjeto(registro);
+		
+		
 		/*
-		
 		JSONObject pai = new JSONObject();
-		
 		String bloco = corrigeDado( b.bloco.toString() );
 		Object json = montaRecursivo(pai, bloco, "\\. ");
-		
 		*/
+
 	}
 
 	private Object montaRecursivo(JSONObject pai, String dado, String delimitador) {
@@ -493,7 +462,7 @@ public class LeitorConteudo {
 
 	private List<SubGrupo> buscaSubGrupoDoGrupo(Grupo g) {
 		List<SubGrupo> lst = new ArrayList<App.SubGrupo>();
-		for( SubGrupo sg: lstSubGrupo) {
+		for( SubGrupo sg: App.lstSubGrupo) {
 			if( sg.idGrupo == g.id) {
 				lst.add(sg);
 			}

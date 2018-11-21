@@ -34,15 +34,15 @@ public class Abertura extends Util implements Regra{
 			json.put("processo", value);
 		}
 
-		String []arr  = getValor( dado);
-		if( arr != null ) {
-			if( arr[0] != null ) {
-				json.put("valor", arr[0]);
-			}
-			if( arr[1] != null ) {
-				json.put("valorLiteral", arr[1]);
-			}
+		value = getObjeto(dado);
+		if( value != null ) {
+			json.put("objeto", value);
 		}
+
+		montaProcesso(json, reg);
+		
+		montaValor(json, reg);
+		
 
 		montaModalidade(json, dado);
 		
@@ -52,10 +52,7 @@ public class Abertura extends Util implements Regra{
 		
 		montaResponsavel(json, reg);
 		
-		value = getObjeto(dado);
-		if( arr != null ) {
-			json.put("objeto", value);
-		}
+		
 		value = getTipo( dado);
 		if( value != null ) {
 			json.put("tipo", value);
@@ -75,7 +72,7 @@ public class Abertura extends Util implements Regra{
 
 	private void montaData(JSONObject json, String dado) {
 		if( dado.toUpperCase().contains("DATA")) {
-			JSONObject evento = new JSONObject();
+//			JSONObject evento = new JSONObject();
 			
 			String []arr = dado.toLowerCase().split("data");
 			for( String s: arr) {
@@ -88,14 +85,14 @@ public class Abertura extends Util implements Regra{
 							break;
 						}
 					}
-					if( pos > 0 ) {
-						String tipo = s.substring(pos, s.length() );
-						tipo = tipo.replaceAll(":", "").trim();
-						evento.put("tipo", tipo);
-					}
+//					if( pos > 0 ) {
+//						String tipo = s.substring(pos, s.length() );
+//						tipo = tipo.replaceAll(":", "").trim();
+//						evento.put("tipo", tipo);
+//					}
 				}else if( s.contains("abertura")) {
 					//TODO procurar definição de prazo complexo.
-					evento.put("tipo", ">>>a ser implementado<<<");
+//					evento.put("tipo", ">>>a ser implementado<<<");
 				}
 				if( pos >= 0 ) {
 					//busca primeiro numero numerico
@@ -112,11 +109,10 @@ public class Abertura extends Util implements Regra{
 						data = data.substring(0, data.indexOf(" "));
 						
 						data = data.replaceAll(",", "").trim();
-						evento.put("data", data);
+						json.put("data", data);
 					}
 				}
 			}
-			json.put("data", evento);			
 		}
 	}
 
@@ -145,29 +141,6 @@ public class Abertura extends Util implements Regra{
 					return "Maior lance ou oferta";
 				}
 			}
-		}
-		return null;
-	}
-
-	private String [] getValor(String dado) {
-		if( dado.contains("R$") ) {
-			String arr []= {null, null};
-			
-			int pos = dado.indexOf("R$");
-			if( pos > 0 ) {
-				String s = dado.substring(pos+2, dado.length()).trim();
-				pos = s.indexOf(' ');
-				arr[0] = "R$ "+s.substring(0, pos).trim();
-				if( arr[0].endsWith(".")) arr[0] = arr[0].substring(0, arr[0].length()-1 );
-				if( s.contains(")") && (s.indexOf("(") < s.indexOf(")") )){
-					
-					pos = s.indexOf("(");
-					s = s.substring(pos, s.indexOf(')'));
-					arr[1] = s;
-					arr[1] = arr[1].replaceAll("\n", " ");
-				}
-			}
-			return arr;
 		}
 		return null;
 	}
