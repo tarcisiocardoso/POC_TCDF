@@ -24,7 +24,7 @@ public class LeitorConteudo {
 	
 	String identificaTipo[] = new String[]{
 		"EXTRATO", "AVISO", "TERMO ADITIVO", "RATIFICA", "DISPENSA", "RETIFICAÇÃO",
-		"RESULTADO"
+		"RESULTADO", "PREGÃO"
 	};
 	
 	String estruturaDado[] = new String[]{
@@ -39,14 +39,21 @@ public class LeitorConteudo {
 //		int init = App.paginaSecaoIII+1;
 		int index = 0;
 		for( SubGrupo sub: App.lstSubGrupo) {
+			if( sub.nome.indexOf("2016/072 - ERRATA")>=0 ) {
+				System.out.println("xxxxxx");
+			}
+			
 			SubGrupo proximoSub = proximoSubGrupo(++index);
 			int linhaProximoSub = getLinhaProximoSubGrupo(proximoSub);
 			boolean isPrimeiraLinha = true;
 			blocoDeDado = null;
+//			if( isTipo(sub.nome) ) {
+//				modalidade = sub.nome;
+//			}
 			for( int i= sub.linha+1; i< linhaProximoSub && i < linhas.length; i++) {
 				linha = linhas[i];
-				if( linha.contains("O BRB - BANCO DE BRASÍLIA S.A. torna público que a Comissão Administrativa da")) {
-					System.out.println("zzzz");
+				if( linha.indexOf("eletrônico para abertura: 12/01/2017, às 9h\", leia-se \"Data, horário e endereço eletrônico para")>=0 ) {
+					System.out.println("xxxxxx");
 				}
 				if( fimDePagina(i) ) {
 					continue;
@@ -69,8 +76,20 @@ public class LeitorConteudo {
 					montaDadoJson( blocoDeDado, sub );
 					blocoDeDado = new BlocoDeDado();
 				}
+				if( isFimGrupo( i ) ) {
+					modalidade = null;
+					break;
+				}
 			}
 		}
+	}
+	private boolean isFimGrupo(int i) {
+		for(App.Grupo g: App.lstGrupo ) {
+			if( g.linha == i ) {
+				return true;
+			}
+		}
+		return false;
 	}
 	private boolean fimDePagina(int i) {
 		// TODO como é a quebra de pagina em todos os arquivos
@@ -105,6 +124,14 @@ public class LeitorConteudo {
 		}
 		if( linha.endsWith("ICP-Brasil.")) {
 			return true;
+		}
+		return false;
+	}
+	private boolean isTipo(String tipo) {
+		for(String s: identificaTipo) {
+			if( tipo.startsWith(s)) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -152,6 +179,12 @@ public class LeitorConteudo {
 				modalidade = linha;
 			}
 		}
+		if( modalidade.contains("293, 293, 1199; 0002324962, RAPHAEL SAMPAIO MALINVERNI, 293, 293, 293")) {
+			System.out.println("....");
+		}
+		if( !registroValido(b, modalidade) ) {
+			return;
+		}
 		
 		Registro registro =new Registro();
 		registro.idSubGrupo = sub.id;
@@ -170,6 +203,30 @@ public class LeitorConteudo {
 
 	}
 
+	private boolean registroValido(BlocoDeDado b, String tipo) {
+		String dado = b.bloco.toString();
+		String ls[] = dado.split("\n");
+		if( ls.length < 3 ) return false;
+		if( dado.contains("Este documento pode ser verificado")) {
+			if( dado.contains("ICP-Brasil")) {
+				return false;
+			}else if( ls.length < 8) return false;
+		}
+		if( dado.contains("TABELAS DE CUSTOS UNITÁRIOS BÁSICOS DE CONSTRUÇÃO")) {
+			modalidade = null;
+			return false;
+		}
+		String s = tipo.replaceAll(",", "");
+		ls = s.split(" ");
+		for(String item: ls) {
+			try {
+				Integer.parseInt(item.trim()); // naõ pode existir numero no tipo
+				return false;
+			}catch(Exception e) {}
+		}
+		return true;
+	}
+	
 	private Object montaRecursivo(JSONObject pai, String dado, String delimitador) {
 		String macro[] = dado.trim().split(delimitador);
 		if( macro.length == 0 ) return null;
@@ -398,6 +455,10 @@ public class LeitorConteudo {
 					fimComplexo = true;
 					regraFimComplexo = new FimPregao();
 					return true;
+				}else if( linha.toUpperCase().contains("PREGOEIR")) {
+					fimComplexo = true;
+					regraFimComplexo = new FimPregao();
+					return true;
 				}
 			}
 			if( i+2 < linhas.length ) {
@@ -502,6 +563,14 @@ public class LeitorConteudo {
 						return true;
 					}
 				}
+			}
+			String s = linha.replaceAll("\\.", "");
+			if( s.toUpperCase().endsWith("PREGOEIRO") || s.toUpperCase().endsWith("PREGOEIRA")) {
+				pos = s.toUpperCase().indexOf("PREGOEIR");
+				s = s.substring(0, pos).trim();
+				String arr[] = s.split(" ");
+				s = arr[ arr.length-1];
+				if( s.toUpperCase().equals(s)) return true;
 			}
 			return false;
 		}

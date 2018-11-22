@@ -21,10 +21,13 @@ public class LeitorSubGrupo {
 	public void montaSubGrupo( ) {
 		int init = App.paginaSecaoIII+1;
 		for( Grupo g: App.lstGrupo) {
-			
+			//TODO ignorando ineditoriais
+//			if( g.nome.equals("INEDITORIAIS")) {
+//				continue;
+//			}
 			for( int i= init; i< g.linha; i++) {
 				linha = linhas[i];
-				if( linha.indexOf("MUNICAÇÃO INSTITUCIONAL E INTERAÇÃO SOCIAL DA GOVERNADORIA")>=0 ) {
+				if( linha.indexOf("2016/072 - ERRATA")>=0 ) {
 					System.out.println("xxxxxx");
 				}
 				if( linha.toUpperCase().equals(linha )) {
@@ -111,6 +114,9 @@ public class LeitorSubGrupo {
 	private boolean isNotValid() {
 		if( linha.endsWith("."))return true;
 		if( linha.trim().length() < 7 )return true;
+		
+//		if( linha.startsWith("PREGÃO ELETRÔNICO")) return false; //é valido
+		
 		for(String s: palavraRestritiva ) {
 			if( linha.indexOf(s)>= 0 ) return true;
 		}
@@ -123,6 +129,8 @@ public class LeitorSubGrupo {
 		if( linha.split("\\.").length > 1 ) return true;
 		
 		if( linha.split(";").length > 1) return true;
+		
+		if( linha.replaceAll(" ", "").length()< 10 ) return true;
 		
 		
 		return false;

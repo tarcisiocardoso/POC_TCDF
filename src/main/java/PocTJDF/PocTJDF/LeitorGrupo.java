@@ -48,7 +48,7 @@ public class LeitorGrupo {
 						if(checkNomeIsGrupo(linha)) { //se a linha tem substantivo em maiusculo, tem forte chance de ser um grupo
 							String linha2 = linhas[i+1];
 							pos = linha2.lastIndexOf(" ");
-							if( pos > 0 ) { // se pessar pelo proximo criterio é um grupo que foi quebrado a linha
+							if( pos > 0 ) { // se passar pelo proximo criterio é um grupo que foi quebrado a linha
 								num = linha2.substring(pos, linha2.length() );
 								Integer.parseInt(num.trim() );
 								

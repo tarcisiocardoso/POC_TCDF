@@ -1,10 +1,9 @@
-package PocTJDF.PocTJDF;
+package PocTJDF.PocTJDF.rules;
 
 import org.json.JSONObject;
 
+import PocTJDF.PocTJDF.App;
 import PocTJDF.PocTJDF.App.Registro;
-import PocTJDF.PocTJDF.rules.Regra;
-import PocTJDF.PocTJDF.rules.Util;
 
 public class Inexigibilidade extends Util implements Regra{
 

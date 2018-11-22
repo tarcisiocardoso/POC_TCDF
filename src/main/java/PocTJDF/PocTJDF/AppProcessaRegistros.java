@@ -11,6 +11,7 @@ import PocTJDF.PocTJDF.App.Arquivo;
 import PocTJDF.PocTJDF.App.Registro;
 import PocTJDF.PocTJDF.rules.Abertura;
 import PocTJDF.PocTJDF.rules.DispensaLicitacao;
+import PocTJDF.PocTJDF.rules.Inexigibilidade;
 import PocTJDF.PocTJDF.rules.NotaEmpenho;
 import PocTJDF.PocTJDF.rules.Regra;
 import PocTJDF.PocTJDF.rules.TermoAditivo;
@@ -20,6 +21,7 @@ public class AppProcessaRegistros {
 	HashMap<String, Regra> regras = new HashMap<String, Regra>(){{
 		put("AVISO DE ABERTURA", new Abertura() );
 		put("AVISO DE LICITAÇÃO", new Abertura() );
+		put("PREGÃO ELETRÔNICO", new Abertura() );
 		put("DISPENSA DE LICITAÇÃO", new DispensaLicitacao() );
 		put("EXTRATO DE NOTA DE EMPENHO", new NotaEmpenho() );
 		put("TERMO ADITIVO", new TermoAditivo() );
@@ -76,10 +78,18 @@ public class AppProcessaRegistros {
 					reg.conteudo = tipo+"\n"+reg.conteudo;
 					DataBase.getInstancia().updateRegistroConteudo(reg);
 				}
-			}else if( reg.tipo.contains("AVISO") && reg.tipo.contains("ABERTU")) {
-				if( !reg.tipo.equals("AVISO DE ABERTURA")) {
+			}else if( reg.tipo.contains("AVISO") && (reg.tipo.contains("ABERTU") || reg.tipo.contains("LICITA")) ) {
+				if( !reg.tipo.equals("AVISO DE LICITAÇÃO")) {
 					String tipo = reg.tipo;
-					reg.tipo = "AVISO DE ABERTURA";
+					reg.tipo = "AVISO DE LICITAÇÃO";
+					reg.dado = "{}";
+					reg.conteudo = tipo+"\n"+reg.conteudo;
+					DataBase.getInstancia().updateRegistroConteudo(reg);
+				}
+			}else if( reg.tipo.contains("PREGÃO") && reg.tipo.contains("ELETRÔNICO")  ) {
+				if( !reg.tipo.equals("PREGÃO ELETRÔNICO")) {
+					String tipo = reg.tipo;
+					reg.tipo = "PREGÃO ELETRÔNICO";
 					reg.dado = "{}";
 					reg.conteudo = tipo+"\n"+reg.conteudo;
 					DataBase.getInstancia().updateRegistroConteudo(reg);

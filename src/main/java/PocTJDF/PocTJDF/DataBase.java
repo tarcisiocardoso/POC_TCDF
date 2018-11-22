@@ -255,6 +255,10 @@ public class DataBase {
 			
 			ResultSet rs = stmt.executeQuery("select id, idSubGrupo, tipo, conteudo from registro where idSubGrupo in "
 					+ "( select id from subgrupo where idGrupo in (select id from grupo where idArquivo = "+a.id+")) ");// and id = 7967");
+			
+//			ResultSet rs = stmt.executeQuery("select id, idSubGrupo, tipo, conteudo from registro where id = 10469 ");// and id = 7967");
+			
+			
 			while( rs.next() ) {
 				App.Registro reg = new Registro();
 				int index = 1;

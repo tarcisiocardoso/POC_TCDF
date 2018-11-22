@@ -72,7 +72,6 @@ public class Abertura extends Util implements Regra{
 
 	private void montaData(JSONObject json, String dado) {
 		if( dado.toUpperCase().contains("DATA")) {
-//			JSONObject evento = new JSONObject();
 			
 			String []arr = dado.toLowerCase().split("data");
 			for( String s: arr) {
@@ -85,11 +84,13 @@ public class Abertura extends Util implements Regra{
 							break;
 						}
 					}
+
 //					if( pos > 0 ) {
 //						String tipo = s.substring(pos, s.length() );
 //						tipo = tipo.replaceAll(":", "").trim();
 //						evento.put("tipo", tipo);
 //					}
+
 				}else if( s.contains("abertura")) {
 					//TODO procurar definição de prazo complexo.
 //					evento.put("tipo", ">>>a ser implementado<<<");
@@ -106,7 +107,10 @@ public class Abertura extends Util implements Regra{
 					if( pos > 0 ) {
 						String data = s.substring(pos, s.length() );
 						
-						data = data.substring(0, data.indexOf(" "));
+						data = data.split("\n")[0];
+						if( data.indexOf(" ") > 0 ) {
+							data = data.substring(0, data.indexOf(" "));
+						}
 						
 						data = data.replaceAll(",", "").trim();
 						json.put("data", data);
@@ -117,7 +121,9 @@ public class Abertura extends Util implements Regra{
 	}
 
 	private String getTipo(String dado) {
-		if( dado.toUpperCase().contains("TIPO")) {
+		if( dado.toUpperCase().contains("ERRATA")) {
+			return "ERRATA";
+		}else if( dado.toUpperCase().contains("TIPO")) {
 			int pos = dado.toUpperCase().indexOf("TIPO");
 			if( pos >= 0 ) {
 				String s = dado.substring(pos, dado.length());
@@ -145,7 +151,6 @@ public class Abertura extends Util implements Regra{
 		return null;
 	}
 
-
 	private String getObjeto(String dado) {
 		if( dado.toUpperCase().contains("OBJETO")) {
 			int pos = dado.toUpperCase().indexOf("OBJETO")+6;
@@ -153,7 +158,7 @@ public class Abertura extends Util implements Regra{
 				String s = dado.substring(pos, dado.length());
 				s = s.replaceAll(":", "").trim();
 				s = s.split("\\.")[0];
-				if( s.length() > 50 && s.contains(",")) {
+				if( s.length() > 50 && s.contains(",getObjeto")) {
 					s = s.substring(0,  s.indexOf(","));
 				}
 				s = s.replaceAll("-\n", "");
