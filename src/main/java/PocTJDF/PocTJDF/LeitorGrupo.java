@@ -221,7 +221,6 @@ public class LeitorGrupo {
 				if( pos == 0 ) {
 					pos = i;
 				}else {
-					System.err.println("Duas seções encontrada, pegando a segunda");
 					pos = i;
 				}				
 			}

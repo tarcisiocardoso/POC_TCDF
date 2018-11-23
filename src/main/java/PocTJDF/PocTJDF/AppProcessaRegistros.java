@@ -87,7 +87,15 @@ public class AppProcessaRegistros {
 					DataBase.getInstancia().updateRegistroConteudo(reg);
 				}
 			}else if( reg.tipo.contains("PREGÃO") && reg.tipo.contains("ELETRÔNICO")  ) {
-				if( !reg.tipo.equals("PREGÃO ELETRÔNICO")) {
+				if( reg.tipo.contains("RESULTADO")) {
+					if( !reg.tipo.equals("RESULTADO")) {
+						String tipo = reg.tipo;
+						reg.tipo = "RESULTADO PREGÃO";
+						reg.dado = "{}";
+						reg.conteudo = tipo+"\n"+reg.conteudo;
+						DataBase.getInstancia().updateRegistroConteudo(reg);
+					}
+				}else if( !reg.tipo.equals("PREGÃO ELETRÔNICO")) {
 					String tipo = reg.tipo;
 					reg.tipo = "PREGÃO ELETRÔNICO";
 					reg.dado = "{}";

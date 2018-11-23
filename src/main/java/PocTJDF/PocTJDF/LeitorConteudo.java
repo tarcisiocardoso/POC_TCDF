@@ -39,20 +39,14 @@ public class LeitorConteudo {
 //		int init = App.paginaSecaoIII+1;
 		int index = 0;
 		for( SubGrupo sub: App.lstSubGrupo) {
-			if( sub.nome.indexOf("2016/072 - ERRATA")>=0 ) {
-				System.out.println("xxxxxx");
-			}
 			
 			SubGrupo proximoSub = proximoSubGrupo(++index);
 			int linhaProximoSub = getLinhaProximoSubGrupo(proximoSub);
 			boolean isPrimeiraLinha = true;
 			blocoDeDado = null;
-//			if( isTipo(sub.nome) ) {
-//				modalidade = sub.nome;
-//			}
 			for( int i= sub.linha+1; i< linhaProximoSub && i < linhas.length; i++) {
 				linha = linhas[i];
-				if( linha.indexOf("eletrônico para abertura: 12/01/2017, às 9h\", leia-se \"Data, horário e endereço eletrônico para")>=0 ) {
+				if( linha.indexOf("A Pregoeira da Central de Compras/SUAG da Secretaria de Estado de Saúde do Distrito")>=0 ) {
 					System.out.println("xxxxxx");
 				}
 				if( fimDePagina(i) ) {
@@ -66,6 +60,13 @@ public class LeitorConteudo {
 					}
 				}else {
 					if( isTipo() ) {
+						if( linha.contains("PREGÃO ELETRÔNICO")) {
+							if( i-1 > 0 ) {
+								if( linhas[i-1].contains("RESULTADO") ) {
+									modalidade = "RESULTADO PREGÃO";
+								}
+							}
+						}
 						continue;
 					}
 				}
@@ -127,14 +128,7 @@ public class LeitorConteudo {
 		}
 		return false;
 	}
-	private boolean isTipo(String tipo) {
-		for(String s: identificaTipo) {
-			if( tipo.startsWith(s)) {
-				return true;
-			}
-		}
-		return false;
-	}
+	
 	private boolean isTipo() {
 		if( linha.toUpperCase().equals( linha )) {
 			for(String s: identificaTipo) {

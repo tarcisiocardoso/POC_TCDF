@@ -15,12 +15,12 @@ public class Util {
 		if( dado.toUpperCase().contains(key.toUpperCase())) {
 			int pos = dado.toUpperCase().indexOf(key.toUpperCase());
 			if( pos > 0 && pos+20 < dado.length() ) {
-				String s = dado.substring(pos+key.length(), pos+key.length()+20 );
+				String s = dado.substring(pos+key.length(), dado.length() );
 				if( key.toUpperCase().equals("CNPJ")) {
 					pos = s.lastIndexOf('.');
 					s = s.substring(0,  pos);
 				}else {
-					s = s.replaceAll("\\.", "");
+					s = s.split("\\.")[0];
 				}
 				s = s.replaceAll(":", "");
 				s = s.split("\n")[0];
@@ -86,7 +86,7 @@ public class Util {
 						if( arr[i+1].toUpperCase().equals(arr[i+1])) {
 							nome = arr[i+1];
 							break;
-						}else if( arr[i-1].toUpperCase().equals(arr[i-1])) {
+						}else if( i> 1 && ( arr[i-1].toUpperCase().equals(arr[i-1])) ) {
 							nome = arr[i-1];
 							break;
 						}
@@ -105,11 +105,11 @@ public class Util {
 					}
 				}
 			}
-			if( nome == null ) {
-				
+			if( nome != null ) {
+				j.put("cargo", "pregoeiro");
+				j.put("nome", nome);
 			}
-			j.put("cargo", "pregoeiro");
-			j.put("nome", nome);
+			
 			
 		}else if( dado.toUpperCase().contains("Superintendente".toUpperCase())) {
 			String nome = null;
@@ -210,8 +210,8 @@ public class Util {
 
 	public void montaValor(JSONObject json, Registro reg) {
 		String dado = reg.conteudo.replaceAll("-\n ", "");
+		
 		String valor = null;
-//		String literal = ">>não implementado<<<";//TODO implementar o valor literal
 		
 		if( dado.contains("R$") ) {
 			int pos = dado.indexOf("R$");
@@ -220,6 +220,7 @@ public class Util {
 				pos = s.indexOf(' ');
 				if( pos < 0 ) {
 					//TODO implementar quando não existe espaço em branco.
+					pos = s.length();
 				}
 				valor = s.substring(0, pos).trim();
 				if( valor.endsWith(".")) valor = valor.substring(0, valor.length()-1 );
@@ -232,7 +233,6 @@ public class Util {
 			
 			pos =0;
 			while(pos < s.length() && !isNum(s.charAt(pos)) ) {
-				System.out.print( s.charAt(pos) );
 				pos++;
 			}
 			if( pos >= 0 && pos < s.length() ) {
