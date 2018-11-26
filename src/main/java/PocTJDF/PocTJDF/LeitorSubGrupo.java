@@ -27,9 +27,6 @@ public class LeitorSubGrupo {
 //			}
 			for( int i= init; i< g.linha; i++) {
 				linha = linhas[i];
-				if( linha.indexOf("2016/072 - ERRATA")>=0 ) {
-					System.out.println("xxxxxx");
-				}
 				if( linha.toUpperCase().equals(linha )) {
 					if(isNotValid()) continue;
 					if( verificaFimSubGrupo(i+1) ) continue;

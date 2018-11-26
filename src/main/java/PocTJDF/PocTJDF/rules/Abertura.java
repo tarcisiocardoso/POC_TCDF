@@ -53,10 +53,7 @@ public class Abertura extends Util implements Regra{
 		montaResponsavel(json, reg);
 		
 		
-		value = getTipo( dado);
-		if( value != null ) {
-			json.put("tipo", value);
-		}
+		montaTipo(json, reg);
 		reg.dado = json.toString();
 		
 		return null;//sem outra regra para execução
@@ -120,36 +117,7 @@ public class Abertura extends Util implements Regra{
 		}
 	}
 
-	private String getTipo(String dado) {
-		if( dado.toUpperCase().contains("ERRATA")) {
-			return "ERRATA";
-		}else if( dado.toUpperCase().contains("TIPO")) {
-			int pos = dado.toUpperCase().indexOf("TIPO");
-			if( pos >= 0 ) {
-				String s = dado.substring(pos, dado.length());
-				s = s.split("\\.")[0];
-				s = s.replaceAll("\n", " ");
-				
-				s = s.toUpperCase();
-				
-				s = s.replaceAll("TIPO", "");
-				s = s.replaceAll(":", "").trim();
-				
-				if( s.contains("MENOR PRE") ) {
-					return "Menor Preço";
-				}else if( s.contains("TÉCNICA E PREÇO") ) {
-					return "Técnica e preço";
-				}else if( s.contains("MELHOR PRE") ) {
-					return "Melhor Preço";
-				}else if( s.contains("MAIOR DESCONTO") ) {
-					return "Maior Desconto";
-				}else if( s.contains("MAIOR LANCE") ) {
-					return "Maior lance ou oferta";
-				}
-			}
-		}
-		return null;
-	}
+	
 
 	private String getObjeto(String dado) {
 		if( dado.toUpperCase().contains("OBJETO")) {
@@ -238,7 +206,8 @@ public class Abertura extends Util implements Regra{
 					String s = dado.substring(pos, pos+10);
 					if( s.indexOf(' ') > 0 ) {
 						s = s.substring(0, s.indexOf(' '));
-					}else if( s.indexOf('\n')> 0) {
+					} 
+					if( s.indexOf('\n')> 0) {
 						s = s.substring(0, s.indexOf('\n'));
 					}
 					return s;

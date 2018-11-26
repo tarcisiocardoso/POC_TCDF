@@ -10,7 +10,7 @@ public class DispensaLicitacao extends Util implements Regra{
 		
 		JSONObject json = new JSONObject();
 		
-		montaTipo(json, reg);
+		montaTipoDispensa(json, reg);
 		
 		montaObjeto(json, reg);
 		
@@ -98,7 +98,7 @@ public class DispensaLicitacao extends Util implements Regra{
 		json.put("objeto", objeto.trim() );
 	}
 
-	private void montaTipo(JSONObject json, Registro reg) {		
+	private void montaTipoDispensa(JSONObject json, Registro reg) {		
 		if( reg.conteudo.contains("RATIFICO") || reg.conteudo.contains("RATIFICA") ) {
 			json.put("tipo", "ratificação");
 		}else if ( reg.conteudo.contains("emergencial") ) {

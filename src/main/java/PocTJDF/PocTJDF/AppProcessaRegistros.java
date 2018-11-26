@@ -14,6 +14,7 @@ import PocTJDF.PocTJDF.rules.DispensaLicitacao;
 import PocTJDF.PocTJDF.rules.Inexigibilidade;
 import PocTJDF.PocTJDF.rules.NotaEmpenho;
 import PocTJDF.PocTJDF.rules.Regra;
+import PocTJDF.PocTJDF.rules.ResultadoPregao;
 import PocTJDF.PocTJDF.rules.TermoAditivo;
 
 public class AppProcessaRegistros {
@@ -22,6 +23,7 @@ public class AppProcessaRegistros {
 		put("AVISO DE ABERTURA", new Abertura() );
 		put("AVISO DE LICITAÇÃO", new Abertura() );
 		put("PREGÃO ELETRÔNICO", new Abertura() );
+		put("RESULTADO PREGÃO", new ResultadoPregao() );
 		put("DISPENSA DE LICITAÇÃO", new DispensaLicitacao() );
 		put("EXTRATO DE NOTA DE EMPENHO", new NotaEmpenho() );
 		put("TERMO ADITIVO", new TermoAditivo() );

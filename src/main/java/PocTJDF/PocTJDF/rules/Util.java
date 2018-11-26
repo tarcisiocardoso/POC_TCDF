@@ -45,10 +45,47 @@ public class Util {
 		
 		return dado;
 	}
-	
+	@Deprecated
 	public void montaProcesso(JSONObject json, Registro reg) {
 		String dado = reg.conteudo.replaceAll("\n-", "");
+		montaProcesso(json, dado);
+	}
+	public void montaProcesso(JSONObject json, String dado) {
+		dado = dado.toUpperCase();
 		
+		String arr[] = dado.split("PROCESSO");
+		
+		int index = 0;
+		String valor = null;
+		for(String s: arr) {
+			if( index++ == 0 ) {
+				continue;
+			}
+			int pos =0;
+
+			while( pos < s.length() && !isNum(s.charAt(pos)) ) {
+				pos++;
+			}
+			if( pos >= 0 && pos < s.length() ) {
+				s = s.substring(pos, s.length() );
+				if( s.indexOf(' ') > 0 ) {
+					s = s.substring(0, s.indexOf(' '));
+				}else if( s.indexOf('\n')> 0) {
+					s = s.substring(0, s.indexOf('\n'));
+				}
+			}
+			s = s.replaceAll(",", "");
+			if( isStringNumero(s) ) {
+				valor = s;
+			}
+			if( valor != null ) {
+				if( valor.endsWith(".")) valor = valor.substring(0, valor.length()-1);
+				
+				json.put("processo", valor);
+				break;
+			}
+		}
+		/*
 		if( dado.toUpperCase().contains("processo".toUpperCase())) {
 			int pos = dado.toUpperCase().indexOf("processo".toUpperCase());
 			String s = dado.substring(pos+8, dado.length() );
@@ -70,15 +107,16 @@ public class Util {
 			
 			json.put("processo", s);
 		}
+		*/
 	}
+	
+
 	public void montaResponsavel(JSONObject json, Registro reg) {
 		String dado = reg.conteudo;
 		JSONObject j = new JSONObject();
 		if( dado.toUpperCase().contains("PREGOEIR")) {
-			
 			String nome = null;
 			String arr[] = dado.split("\n");
-			
 			for( int i=0; i< arr.length; i++) {
 				String s = arr[i];
 				if( s.toUpperCase().contains("PREGOEIR") ) {
@@ -109,11 +147,8 @@ public class Util {
 				j.put("cargo", "pregoeiro");
 				j.put("nome", nome);
 			}
-			
-			
 		}else if( dado.toUpperCase().contains("Superintendente".toUpperCase())) {
 			String nome = null;
-			
 			int pos = dado.toUpperCase().indexOf( "Superintendente".toUpperCase() );
 			
 			int index = pos;
@@ -180,7 +215,16 @@ public class Util {
 			json.put("responsavel", j);
 		}
 	}
-	
+	private boolean isStringNumero(String valor) {
+		String s = valor.replaceAll("\\.", "");
+		s = s.replaceAll("-", "");
+		s = s.replaceAll("/", "");
+		try {
+			Long.parseLong(s.trim());
+			return true;
+		}catch(Exception e) {}
+		return false;
+	}
 	public boolean isNum(char c) {
 		if( "0123456789".indexOf(c)>= 0 ) {
 			return true;
@@ -208,9 +252,12 @@ public class Util {
 		json.put("evento", evento);	
 	}
 
+	@Deprecated
 	public void montaValor(JSONObject json, Registro reg) {
 		String dado = reg.conteudo.replaceAll("-\n ", "");
-		
+		montaValor(json, dado);
+	}
+	public void montaValor(JSONObject json, String dado) {
 		String valor = null;
 		
 		if( dado.contains("R$") ) {
@@ -253,9 +300,12 @@ public class Util {
 		if( valor != null ) valor = valor.replaceAll(";", "");
 		if( valor != null ) json.put("valor", valor);
 	}
+	@Deprecated
 	public void montaCNPJ(JSONObject json, Registro reg) {
 		String dado =  reg.conteudo.replaceAll("\n", "");
-				
+		montaCNPJ(json, dado);
+	}
+	public void montaCNPJ(JSONObject json, String dado) {
 		if( dado.toUpperCase().contains("cnpj".toUpperCase() )) {
 			int pos = dado.toUpperCase().indexOf("CNPJ");
 			String s = dado.substring(pos+4, dado.length() );
@@ -284,6 +334,37 @@ public class Util {
 				if( s.endsWith(".") )  s = s.substring(0, s.length()-1);
 			}
 			json.put("cnpj", s);
+		}
+	}
+	
+	public void montaTipo(JSONObject json, Registro reg) {
+		String dado = reg.conteudo;
+		if( dado.toUpperCase().contains("ERRATA")) {
+			json.put("tipo","ERRATA");
+		}else if( dado.toUpperCase().contains("TIPO")) {
+			int pos = dado.toUpperCase().indexOf("TIPO");
+			if( pos >= 0 ) {
+				String s = dado.substring(pos, dado.length());
+				s = s.split("\\.")[0];
+				s = s.replaceAll("\n", " ");
+				
+				s = s.toUpperCase();
+				
+				s = s.replaceAll("TIPO", "");
+				s = s.replaceAll(":", "").trim();
+				
+				if( s.contains("MENOR PRE") ) {
+					json.put("tipo", "Menor Preço");
+				}else if( s.contains("TÉCNICA E PREÇO") ) {
+					json.put("tipo","Técnica e preço");
+				}else if( s.contains("MELHOR PRE") ) {
+					json.put("tipo","Melhor Preço");
+				}else if( s.contains("MAIOR DESCONTO") ) {
+					json.put("tipo","Maior Desconto");
+				}else if( s.contains("MAIOR LANCE") ) {
+					json.put("tipo","Maior lance ou oferta");
+				}
+			}
 		}
 	}
 	
