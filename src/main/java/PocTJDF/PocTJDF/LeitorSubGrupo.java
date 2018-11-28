@@ -27,6 +27,9 @@ public class LeitorSubGrupo {
 //			}
 			for( int i= init; i< g.linha; i++) {
 				linha = linhas[i];
+				if( linha.contains("EDITAL Nº 05/2017")) {
+					System.out.println("....");
+				}
 				if( linha.toUpperCase().equals(linha )) {
 					if(isNotValid()) continue;
 					if( verificaFimSubGrupo(i+1) ) continue;

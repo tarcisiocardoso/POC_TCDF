@@ -24,7 +24,7 @@ public class LeitorConteudo {
 	
 	String identificaTipo[] = new String[]{
 		"EXTRATO", "AVISO", "TERMO ADITIVO", "RATIFICA", "DISPENSA", "RETIFICAÇÃO",
-		"RESULTADO", "PREGÃO"
+		"RESULTADO", "PREGÃO", "CHAMAMENTO", "CONVOCAÇÃO"
 	};
 	
 	String estruturaDado[] = new String[]{
@@ -46,8 +46,8 @@ public class LeitorConteudo {
 			blocoDeDado = null;
 			for( int i= sub.linha+1; i< linhaProximoSub && i < linhas.length; i++) {
 				linha = linhas[i];
-				if( linha.indexOf("A Pregoeira da Central de Compras/SUAG da Secretaria de Estado de Saúde do Distrito")>=0 ) {
-					System.out.println("xxxxxx");
+				if( linha.contains("EDITAL Nº 05/2017")) {
+					System.out.println("....");
 				}
 				if( fimDePagina(i) ) {
 					continue;
@@ -162,6 +162,16 @@ public class LeitorConteudo {
 
 	private void montaDadoJson(BlocoDeDado b, SubGrupo sub) {
 		
+		//TODO valida registro antes de inserir
+		String arr[] = b.bloco.toString().split("\n");
+		for( int i=0; i< arr.length; i++) {
+			if( arr[i].startsWith("_") && arr[i].endsWith("_") && i+1 < arr.length) {
+				if(arr[i+1].startsWith("(*)") ){
+					return;//e apenas uma nota de fim de registro.
+				}
+			}
+		}
+		
 		if( sub.id == 0 ) {
 			sub.id = DataBase.getInstancia().insertSubGrupo(sub);
 		}
@@ -172,9 +182,6 @@ public class LeitorConteudo {
 			}else {
 				modalidade = linha;
 			}
-		}
-		if( modalidade.contains("293, 293, 1199; 0002324962, RAPHAEL SAMPAIO MALINVERNI, 293, 293, 293")) {
-			System.out.println("....");
 		}
 		if( !registroValido(b, modalidade) ) {
 			return;

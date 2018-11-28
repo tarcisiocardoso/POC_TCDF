@@ -63,7 +63,7 @@ public class App {
 //			FileWriter writer = new FileWriter(out);
 //			writer.write( text);
 //			writer.close();
-//			
+			
 			linhas = text.split("\n");
 			
 			document.close();
@@ -99,7 +99,7 @@ public class App {
 		public String resumo;
 		public String problema;
 		
-		public String toString() { return nome; }
+		public String toString() { return "["+linha+"] "+ nome; }
 	}
 	
 	public static class SubGrupo{

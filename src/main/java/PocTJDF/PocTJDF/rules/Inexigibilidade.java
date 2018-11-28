@@ -142,7 +142,7 @@ public class Inexigibilidade extends Util implements Regra{
 		String dado = reg.conteudo.replaceAll("-\n", "");
 		
 		if( dado.toUpperCase().contains("favor da empresa".toUpperCase())) {
-			String s = dado.split("favor da empresa")[1];
+			String s = dado.toUpperCase().split("favor da empresa".toUpperCase())[1];
 			int pos = s.indexOf(",");
 			if( pos > 0 ) {
 				s = s.substring(0, pos);

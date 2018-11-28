@@ -70,7 +70,8 @@ public class Util {
 				s = s.substring(pos, s.length() );
 				if( s.indexOf(' ') > 0 ) {
 					s = s.substring(0, s.indexOf(' '));
-				}else if( s.indexOf('\n')> 0) {
+				}
+				if( s.indexOf('\n')> 0) {
 					s = s.substring(0, s.indexOf('\n'));
 				}
 			}
@@ -84,6 +85,59 @@ public class Util {
 				json.put("processo", valor);
 				break;
 			}
+		}
+		
+		if( valor == null ) {// NÃO ENCONTROU PROCESSO
+			if( dado.contains("Nº")) {
+				int pos = dado.indexOf("Nº");
+				String s = dado.substring(pos, dado.length());
+				pos = 0;
+				while( pos < s.length() && !isNum(s.charAt(pos)) ) {
+					pos++;
+				}
+				if( pos >= 0 && pos < s.length() ) {
+					s = s.substring(pos, s.length() );
+					if( s.indexOf(' ') > 0 ) {
+						s = s.substring(0, s.indexOf(' '));
+					}
+					if( s.indexOf('\n')> 0) {
+						s = s.substring(0, s.indexOf('\n'));
+					}
+				}
+				s = s.replaceAll(",", "");
+				if( isStringNumero(s) ) {
+					valor = s;
+				}
+				if( valor != null ) {
+					if( valor.endsWith(".")) valor = valor.substring(0, valor.length()-1);
+					
+					json.put("processo", valor);
+				}
+			}else { //não encontrou numero, analisa a primeira linha
+				String s = dado.split("\n")[0];
+				int pos = 0;
+				while( pos < s.length() && !isNum(s.charAt(pos)) ) {
+					pos++;
+				}
+				if( pos >= 0 && pos < s.length() ) {
+					s = s.substring(pos, s.length() );
+					if( s.indexOf(' ') > 0 ) {
+						s = s.substring(0, s.indexOf(' '));
+					}
+					if( s.indexOf('\n')> 0) {
+						s = s.substring(0, s.indexOf('\n'));
+					}
+				}
+				s = s.replaceAll(",", "");
+				if( isStringNumero(s) ) {
+					valor = s;
+				}
+				if( valor != null ) {
+					if( valor.endsWith(".")) valor = valor.substring(0, valor.length()-1);
+					json.put("processo", valor);
+				}
+			}
+			
 		}
 		/*
 		if( dado.toUpperCase().contains("processo".toUpperCase())) {
@@ -210,15 +264,25 @@ public class Util {
 			j.put("cargo", "executor");
 			j.put("nome", s.trim() );
 		}
+		if( j.isEmpty()) {
+			String arr[] = dado.split("\n");
+			String s = arr[ arr.length-1 ];
+			if( s.toUpperCase().equals(s)) {
+				//TODO colocar 
+				j.put("cargo", "pregoeiro >>fake<<");
+				j.put("nome", s.trim() );
+			}
+		}
 		
 		if( !j.isEmpty()) {
 			json.put("responsavel", j);
 		}
 	}
-	private boolean isStringNumero(String valor) {
-		String s = valor.replaceAll("\\.", "");
-		s = s.replaceAll("-", "");
-		s = s.replaceAll("/", "");
+	public boolean isStringNumero(String valor) {
+		String s = valor.replaceAll("[^a-zA-Z0-9]+","");
+//		String s = valor.replaceAll("\\.", "");
+//		s = s.replaceAll("-", "");
+//		s = s.replaceAll("/", "");
 		try {
 			Long.parseLong(s.trim());
 			return true;
@@ -260,7 +324,30 @@ public class Util {
 	public void montaValor(JSONObject json, String dado) {
 		String valor = null;
 		
-		if( dado.contains("R$") ) {
+		if( dado.toUpperCase().contains("VALOR TOTAL") ){
+			int pos = dado.toUpperCase().indexOf("VALOR TOTAL")+10;
+			String s = dado.substring(pos, dado.length() );
+			pos = 0 ;
+			while(pos < s.length() && !isNum(s.charAt(pos)) ) {
+				pos++;
+			}
+			if( pos >= 0 && pos < s.length() ) {
+				s = s.substring(pos, s.length() );
+				
+				if( s.indexOf(' ') > 0 ) {
+					s = s.substring(0, s.indexOf(' '));
+				}
+				if( s.indexOf('\n')> 0) {
+					s = s.substring(0, s.indexOf('\n'));
+				}
+				if( s.startsWith(";")) s = s.substring(1, s.length());
+				
+				s = s.trim();
+				valor =s ;
+			}
+		}else if( dado.contains("R$") ) {
+			String arr[] = dado.split("R$");
+			
 			int pos = dado.indexOf("R$");
 			if( pos > 0 ) {
 				String s = dado.substring(pos+2, dado.length()).trim();
@@ -297,7 +384,11 @@ public class Util {
 				valor =s ;
 			}
 		}
-		if( valor != null ) valor = valor.replaceAll(";", "");
+		if( valor != null ) {
+			valor = valor.replaceAll(";", "");
+			if( valor.endsWith(".")) valor = valor.substring(0, valor.length()-1);
+		}
+		
 		if( valor != null ) json.put("valor", valor);
 	}
 	@Deprecated

@@ -22,17 +22,120 @@ o Lote 01 de R$ 231.397,98.
 		montaResponsavel(json, reg);
 		
 		montaVencedoras(json, dado);
-		reg.dado = json.toString();
 		
+		montaValor(json, dado);
+
+		reg.dado = json.toString();
+
 		return null;
 	}
-
+	/*
+PREGÃO ELETRÔNICO POR SRP Nº 325/2017
+Pregoeira Substituta
+A Pregoeira da Central de Compras/SUAG da Secretaria de Estado de Saúde do Distrito
+Federal comunica que, no Pregão Eletrônico por SRP nº 325/2017, sagraram-se vencedoras
+(empresas, itens, valores): 
+BRAKKO COMÉRCIO E IMPORTAÇÃO LTDA, CNPJ:01.085.207/0001-79, itens: 01 (R$ 780,00), 03 (R$ 970,00) e 05 (R$ 1.065,00); POINTER
+SERVIÇOS HOSPITALARES LTDA EPP- ME, CNPJ: 03.098.826/0001-23, itens: 02 (R$
+780,00), 04 (R$ 970,00) e 06 (R$ 1.065,00); perfazendo o valor total licitado de R$
+1.632,500,00. Os itens 07 e 08 fracassaram.
+PRISCILLA MOREIRA FALCÃO FIGUEIREDO	 
+	 */
 	private void montaVencedoras(JSONObject json, String dado) {
+		int pos = dado.toUpperCase().indexOf("EMPRESA");
+		if( pos < 0) pos = dado.toUpperCase().indexOf("VENCEDOR");
+		
+		if( pos < 0 ) throw new RuntimeException("problema de tipo. Esse não parece ser um resultado de pregão.");
+		
+		String s = dado.substring(pos, dado.length());
+		s = s.replaceAll("\n", " ");
+		boolean start = false;
+		boolean isBuscaCnpj = false;
+		boolean isItens = false;
+		boolean isValor = false;
+		String nome = "";		
+		String arr[] = s.split(" ");
+//		int qtdCnpj = dado.toUpperCase().split("CNPJ").length;
+		
+		JSONObject jEmpresa = new JSONObject();
+		JSONObject jItens = new JSONObject();
+		for(String palavra: arr) {
+			if( palavra.isEmpty() )continue;
+			if( palavra.contains(":")) {
+				if( !start) {
+					start = true;
+					continue;
+				}
+			}
+			if( start ) {
+				if (palavra.toUpperCase().contains("CNPJ")) {
+					isBuscaCnpj = true;
+					isItens = false;
+					isValor = false;
+					continue;
+				}				
+				if( palavra.toUpperCase().contains("ITENS")) {
+					isItens = true;
+					continue;
+				}
+				if( isItens ) {
+					if( isStringNumero(palavra)) {
+						if( palavra.contains(",")) {
+							jItens.put("valor", palavra);
+							jEmpresa.append("itens", jItens );
+							jItens = new JSONObject();
+							isBuscaCnpj = false;
+							isValor = false;
+						}else {
+							jItens.put("item", palavra);
+							continue;
+						}
+					}else if( palavra.contains("$")) {
+						isValor = true;
+						continue;
+					}
+					if( palavra.endsWith(";") || palavra.endsWith(".")) {
+//						if( qtdCnpj > 0 ) 
+						if( jEmpresa.isEmpty()) continue;
+						json.append("vencedores", jEmpresa);
+						jEmpresa = new JSONObject();
+						jItens = new JSONObject();
+						isBuscaCnpj = false;
+						isValor = false;
+						isBuscaCnpj = false;
+						nome = "";
+						continue;
+					}
+				}
+				if( isBuscaCnpj ){
+					if( isStringNumero(palavra) ) {
+						isBuscaCnpj = false;
+						jEmpresa.put("cnpj", palavra);
+						if( isNomeValido(nome ) ) {
+							jEmpresa.put("nome", nome.trim());
+							nome = "";
+							continue;
+						}
+					}
+				}
+				if (nome.isEmpty() && palavra.length() < 2) continue;
+				nome += " "+palavra;
+			}
+		}
+	}
+	
+	
+	private void montaVencedoras_old(JSONObject json, String dado) {
 		String arr[] = dado.toUpperCase().split("EMPRESA");
-		if( arr.length < 2 ) {
+		int tipoBusca =  0; //VENCEDOR
+		if( arr.length < 3 ) {
 			arr = dado.toUpperCase().split("VENCEDOR");
 		}
-		if( arr.length < 2) {
+		if( arr.length < 3 ) {
+			tipoBusca = 1; //cnpj
+			arr = dado.toUpperCase().split("CNPJ");
+		}
+		if( arr.length < 3) {
 			throw new RuntimeException("Falha ao buscar a vencedora.");
 		}else {
 			int index =0;
@@ -40,10 +143,23 @@ o Lote 01 de R$ 231.397,98.
 				JSONObject j = new JSONObject();
 				if( index == 0 ) {
 					montaObjeto(json, s);
-				}else {
-					montaValor(j, s);
-					montaEmpresa(j, s);
-					montaCNPJ(j, s);
+				}
+				{
+					if( tipoBusca == 0 ) {
+						montaEmpresa(j, s);
+						montaCNPJ(j, s);
+					}else {
+						if( index < arr.length-1 ) {
+							montaCNPJEspecifico(j, arr[index+1]);
+							montaNomeEmpresaTipoBuscaCnpj(j, s);
+						}
+					}
+					String valores[] = s.split("R\\$");
+					if( valores.length > 1) {
+						montaListaValores(j, valores);
+					}else {
+						montaValor(j, s);
+					}
 				}
 				index++;
 				if( !j.isEmpty() ) {
@@ -52,15 +168,126 @@ o Lote 01 de R$ 231.397,98.
 			}
 		}
 	}
+	private boolean isNomeValido(String nome) {
+		if( nome.isEmpty()) return false;
+		if( isNum( nome.charAt(0))) return false;//começa com numero
+		return true;
+	}
+	private void montaNomeEmpresaTipoBuscaCnpj(JSONObject j, String s) {
+		s = s.replaceAll("\n", " ");
+		String valor = null;
+		int pos = s.lastIndexOf(":");
+		if( pos >=0 ) {
+			s = s.substring(pos+1, s.length() ).trim();
+			valor = s;
+		}
+		{
+			pos = s.lastIndexOf(";");
+			if( pos >=0 ) {
+				s = s.substring(pos+1, s.length() ).trim();
+				valor = s;
+			}
+		}
+		
+		if( valor != null ) {
+			j.put("nome", valor);
+		}
+	}
+
+	private void montaCNPJEspecifico(JSONObject j, String s) {
+		int pos =0;
+		while( pos < s.length() && !isNum(s.charAt(pos)) ) {
+			pos++;
+		}
+		if( pos >= 0 && pos < s.length() ) {
+			s = s.substring(pos, s.length() );
+			if( s.indexOf(',') > 0 ) {
+				s = s.substring(0, s.indexOf(','));
+			}
+			if( s.indexOf(' ') > 0 ) {
+				s = s.substring(0, s.indexOf(' '));
+			}
+			if( s.indexOf('\n')> 0) {
+				s = s.substring(0, s.indexOf('\n'));
+			}
+			if( s.startsWith(":")) s = s.substring(1, s.length());
+			if( s.endsWith(".") )  s = s.substring(0, s.length()-1);
+		}
+		j.put("cnpj", s);
+	}
+
+	//itens: 01 (R$ 780,00), 03 (R$ 970,00) e 05 (R$ 1.065,00);
+	private void montaListaValores(JSONObject json, String[] valores) {
+		String item = null;
+		String valor = null;
+		for(String s: valores) {
+			if( item == null) {
+				if( s.contains("ITENS")) {
+					int pos = s.indexOf("ITENS");
+					s = s.substring(pos, s.length() );
+				}
+				int pos =0;
+				while(pos < s.length() && !isNum(s.charAt(pos)) ) {
+					pos++;
+				}
+				item = s.substring(pos, s.length());
+				item = item.replaceAll("\\)", "").replaceAll("\\(", "").trim();
+			}else {
+				int pos =0;
+				while(pos < s.length() && !isNum(s.charAt(pos)) ) {
+					pos++;
+				}
+				valor = s.substring(pos, s.length()).trim();
+				pos = valor.indexOf(' ');
+				if( pos < 0 ) pos = valor.indexOf('\n');
+				if( pos < 0 ) throw new RuntimeException("Não pode desncobrir onde começa o item.");
+				String proximoItem = valor.substring(pos, valor.length());
+				valor = valor.substring(0, pos);
+				valor = valor.replaceAll("\\)", "").replaceAll(";", "").trim();
+				JSONObject j = new JSONObject();
+				j.put("item", item);
+				j.put("valor", valor);
+				json.append("itens", j);
+				item = proximoItem;
+				pos =0;
+				while(pos < item.length() && !isNum(item.charAt(pos)) ) {
+					pos++;
+				}
+				item = item.substring(pos, item.length());
+				item = item.replaceAll("\\)", "").replaceAll("\\(", "").trim();
+			}
+		}
+	}
 
 	private void montaEmpresa(JSONObject j, String dado) {
 		String valor = null;
 		if( dado.contains(":")) {
-			String s = dado.split(":")[1];
-			if( s.contains(",")) {
-				s = s.split(",")[0];
+			String arr[] = dado.split(":");
+			if( arr.length > 2) {
+				for(String s: arr) {
+					if( s.isEmpty() || isStringNumero( s )) {
+						continue;
+					}else {						
+						int pos = 0 ;
+						while(pos < s.length() && !isNum(s.charAt(pos)) ) {
+							System.out.print( s.charAt(pos) );
+							pos++;
+						}
+						if( pos < s.length()-1 ) {
+							continue;
+						}
+					}
+					//TODO como confirmar se é um nome de empresa
+					valor = s;
+					break;
+				}
+			}else {
+				String s = dado.split(":")[1];
+				if( s.contains(",")) {
+					s = s.split(",")[0];
+				}
+				valor = s.trim();
 			}
-			valor = s.trim();
 		}
 		if( valor != null ) {
 			j.put("nome", valor);

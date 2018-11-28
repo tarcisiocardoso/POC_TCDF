@@ -254,7 +254,7 @@ public class DataBase {
 		try {
 			
 			ResultSet rs = stmt.executeQuery("select id, idSubGrupo, tipo, conteudo from registro where idSubGrupo in "
-					+ "( select id from subgrupo where idGrupo in (select id from grupo where idArquivo = "+a.id+"))  ");//and id = 11431");
+					+ "( select id from subgrupo where idGrupo in (select id from grupo where idArquivo = "+a.id+")) "); //and id = 12169");
 			
 			while( rs.next() ) {
 				App.Registro reg = new Registro();
@@ -284,5 +284,30 @@ public class DataBase {
 			e.printStackTrace();
 		}
 		return "";
+	}
+
+	public List<App.Grupo> buscaGrupoEmOrdemLinha(long id) {
+		
+		List<App.Grupo> lst = new ArrayList<App.Grupo>();
+		try {
+			
+			ResultSet rs = stmt.executeQuery("select id, linha, pagina, nome, resumo, problema from grupo where idArquivo = "+id+" order by linha");
+			
+			while( rs.next() ) {
+				App.Grupo g = new App.Grupo();
+				int index = 1;
+				g.id = rs.getLong(index++);
+				g.linha = rs.getInt(index++);
+				g.pagina = rs.getInt(index++);
+				g.nome   = rs.getString(index++);
+				g.resumo   = rs.getString(index++);
+				g.problema   = rs.getString(index++);
+				lst.add(g);
+			}
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lst;
 	}
 }

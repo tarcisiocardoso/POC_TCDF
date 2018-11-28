@@ -100,6 +100,9 @@ public class AppProcessaRegistros {
 				}else if( !reg.tipo.equals("PREGÃO ELETRÔNICO")) {
 					String tipo = reg.tipo;
 					reg.tipo = "PREGÃO ELETRÔNICO";
+					if( reg.conteudo.toUpperCase().contains("VENCEDO")) {
+						reg.tipo = "RESULTADO PREGÃO";
+					}
 					reg.dado = "{}";
 					reg.conteudo = tipo+"\n"+reg.conteudo;
 					DataBase.getInstancia().updateRegistroConteudo(reg);

@@ -141,10 +141,17 @@ public class LeitorGrupo {
 		comparaSecaoIII( App.paginaSecaoIII );
 		reestruturaSeGrupoTerminaNaPagina();
 		salvaBanco();
-
-		
+		buscaGrupoEmOrdemLinha();
 	}
 	
+	private void buscaGrupoEmOrdemLinha() {
+		App.lstGrupo = DataBase.getInstancia().buscaGrupoEmOrdemLinha(App.arquivo.id);
+		for (Grupo g : App.lstGrupo) {
+			System.out.println(g);
+		}
+		
+	}
+
 	private void reestruturaSeGrupoTerminaNaPagina() {
 		for (Grupo g : App.lstGrupo) {
 			if( g.linha+1 < linhas.length ) {
@@ -158,6 +165,7 @@ public class LeitorGrupo {
 
 	private void salvaBanco() {
 		for (Grupo g : App.lstGrupo) {
+			System.out.println(g);
 			inserir(g);
 		}
 	}
