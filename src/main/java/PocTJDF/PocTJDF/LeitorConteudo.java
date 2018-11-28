@@ -24,7 +24,7 @@ public class LeitorConteudo {
 	
 	String identificaTipo[] = new String[]{
 		"EXTRATO", "AVISO", "TERMO ADITIVO", "RATIFICA", "DISPENSA", "RETIFICAÇÃO",
-		"RESULTADO", "PREGÃO", "CHAMAMENTO", "CONVOCAÇÃO"
+		"RESULTADO", "PREGÃO", "CHAMAMENTO", "CONVOCAÇÃO", "EDITAL", "ADITIVO"
 	};
 	
 	String estruturaDado[] = new String[]{
@@ -46,12 +46,9 @@ public class LeitorConteudo {
 			blocoDeDado = null;
 			for( int i= sub.linha+1; i< linhaProximoSub && i < linhas.length; i++) {
 				linha = linhas[i];
-				if( linha.contains("EDITAL Nº 05/2017")) {
-					System.out.println("....");
-				}
-				if( fimDePagina(i) ) {
-					continue;
-				}
+//				if( linha.contains("05/2017")) {
+//					System.out.println("....");
+//				}
 				if( isPrimeiraLinha ) {
 					blocoDeDado = new BlocoDeDado();
 					isPrimeiraLinha = false;
@@ -132,7 +129,7 @@ public class LeitorConteudo {
 	private boolean isTipo() {
 		if( linha.toUpperCase().equals( linha )) {
 			for(String s: identificaTipo) {
-				if( linha.startsWith(s)) {
+				if( linha.contains(s)) {
 					modalidade = linha;
 					return true;
 				}
@@ -401,11 +398,11 @@ public class LeitorConteudo {
 		return dado;
 	}
 
-	private boolean fimBloco(int i) {
+	private boolean fimBloco(int indexLinha) {
 		if( linha.endsWith(".")) {
-			if( identificaFimComplexo(i) ) {
+			if( identificaFimComplexo(indexLinha) ) {
 				if( regraFimComplexo != null ) {
-					if( regraFimComplexo.isFim() ) {
+					if( regraFimComplexo.isFim(indexLinha) ) {
 						regraFimComplexo = null;
 						fimComplexo = false;
 						return true;
@@ -414,7 +411,7 @@ public class LeitorConteudo {
 					return false;
 				}
 			}else {
-				if( i+1 < linhas.length && !linhas[i+1].equals( linhas[i+1].toUpperCase() )) {
+				if( indexLinha+1 < linhas.length && !linhas[indexLinha+1].equals( linhas[indexLinha+1].toUpperCase() )) {
 					regraFimComplexo = null;
 					fimComplexo = false;
 					return false;
@@ -422,12 +419,12 @@ public class LeitorConteudo {
 					regraFimComplexo = null;
 					fimComplexo = false;
 					
-					return (i+1 < linhas.length && !linhas[i+1].contains(":") );
+					return (indexLinha+1 < linhas.length && !linhas[indexLinha+1].contains(":") );
 				}
 			}
 		}else {
 			if( regraFimComplexo != null ) {
-				if( regraFimComplexo.isFim() ) {
+				if( regraFimComplexo.isFim(indexLinha) ) {
 					regraFimComplexo = null;
 					fimComplexo = false;
 					return true;
@@ -439,7 +436,7 @@ public class LeitorConteudo {
 
 	private boolean identificaFimComplexo(int i) {
 		if( fimComplexo ) {
-			return regraFimComplexo.isFim();
+			return regraFimComplexo.isFim(i);
 		}else { // se é necessario uma analise de fim complexo
 			String bloco = blocoDeDado.bloco.toString();
 			if( i+1 >= linhas.length ) {
@@ -543,7 +540,7 @@ public class LeitorConteudo {
 	}
 	
 	public class FimCaracterMaluco implements Fim{
-		public boolean isFim() {
+		public boolean isFim(int indexLinha) {
 			
 			if( linha.contains("___") || linha.contains("(*)")) {
 				return false;
@@ -553,7 +550,7 @@ public class LeitorConteudo {
 	}
 	public class FimPregao implements Fim{
 		
-		public boolean isFim() {
+		public boolean isFim(int indexLinha) {
 			int pos = linha.lastIndexOf(' ');
 			if( pos >= 0) {
 				String last = linha.substring(pos, linha.length() );
@@ -571,14 +568,24 @@ public class LeitorConteudo {
 				s = s.substring(0, pos).trim();
 				String arr[] = s.split(" ");
 				s = arr[ arr.length-1];
-				if( s.toUpperCase().equals(s)) return true;
+				if( s.toUpperCase().equals(s)) {
+					return true;
+				}else {
+					if( indexLinha +1 >= linhas.length) return true;
+					s = linhas[indexLinha+1];
+					for(String item: identificaTipo) {
+						if( s.startsWith(item)) {
+							return true;
+						}
+					}
+				}
 			}
 			return false;
 		}
 	}
 	public class FimterminaComPregoiro implements Fim{
 
-		public boolean isFim() {
+		public boolean isFim(int indexLinha) {
 			if( linha.toUpperCase().startsWith("PREGOEIR") || linha.toUpperCase().startsWith("DIRETOR")) {
 				return true;
 			}

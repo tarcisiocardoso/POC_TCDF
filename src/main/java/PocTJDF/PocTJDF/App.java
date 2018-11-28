@@ -142,6 +142,7 @@ public class App {
 		
 		File fs = new File(prop.getProperty("workdir"));//"/home/tarcisio/trabalho/EDS/projetos/TJDF/tmp");
 		for (File f : fs.listFiles()) {
+			App.paginaSecaoIII = 0;
 			App.lstGrupo.clear();
 			App.lstSubGrupo.clear();
 			if( f.getName().endsWith("pdf")) {

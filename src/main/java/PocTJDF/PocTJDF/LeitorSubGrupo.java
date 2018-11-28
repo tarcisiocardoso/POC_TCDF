@@ -27,9 +27,9 @@ public class LeitorSubGrupo {
 //			}
 			for( int i= init; i< g.linha; i++) {
 				linha = linhas[i];
-				if( linha.contains("EDITAL Nº 05/2017")) {
-					System.out.println("....");
-				}
+//				if( linha.contains("05/2017")) {
+//					System.out.println("....");
+//				}
 				if( linha.toUpperCase().equals(linha )) {
 					if(isNotValid()) continue;
 					if( verificaFimSubGrupo(i+1) ) continue;
@@ -89,7 +89,6 @@ public class LeitorSubGrupo {
 			return -1;
 		}
 		while( g.resumo.indexOf(linhas[linha].replaceAll("\n", "").replaceAll(" ", ""))>=0 ) {
-			//System.out.println( linhas[linha] );
 			linha++;
 			if (linha >= linhas.length ) { //acabou a linha, acabou o grupo
 				break;

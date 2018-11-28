@@ -104,7 +104,7 @@ public class DispensaLicitacao extends Util implements Regra{
 		}else if ( reg.conteudo.contains("emergencial") ) {
 			json.put("tipo", "emergencial");
 		}else {
-			json.put("tipo", ">>>nao identificado<<<");
+//			json.put("tipo", "normal");
 		}
 	}
 	

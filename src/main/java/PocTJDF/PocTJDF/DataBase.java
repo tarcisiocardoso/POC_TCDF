@@ -252,9 +252,8 @@ public class DataBase {
 	public List<App.Registro> getRegistro(Arquivo a) {
 		List<App.Registro> lst = new ArrayList<Registro>();
 		try {
-			
 			ResultSet rs = stmt.executeQuery("select id, idSubGrupo, tipo, conteudo from registro where idSubGrupo in "
-					+ "( select id from subgrupo where idGrupo in (select id from grupo where idArquivo = "+a.id+")) "); //and id = 12169");
+					+ "( select id from subgrupo where idGrupo in (select id from grupo where idArquivo = "+a.id+")) ");//and id = 17368");
 			
 			while( rs.next() ) {
 				App.Registro reg = new Registro();

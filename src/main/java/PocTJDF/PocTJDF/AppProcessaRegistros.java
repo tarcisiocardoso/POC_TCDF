@@ -160,6 +160,8 @@ public class AppProcessaRegistros {
 	private Regra lookup(Registro reg) {
 		if( regras.containsKey(reg.tipo)) {
 			return regras.get(reg.tipo);
+		}else {
+//			return new Inexigibilidade();
 		}
 		return null;
 	}

@@ -2,5 +2,5 @@ package PocTJDF.PocTJDF;
 
 public interface Fim {
 
-	public boolean isFim();
+	public boolean isFim(int indexLinha);
 }

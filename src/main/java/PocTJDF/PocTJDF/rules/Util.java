@@ -79,7 +79,7 @@ public class Util {
 			if( isStringNumero(s) ) {
 				valor = s;
 			}
-			if( valor != null ) {
+			if( valor != null && valor.length() > 7 ) {
 				if( valor.endsWith(".")) valor = valor.substring(0, valor.length()-1);
 				
 				json.put("processo", valor);
@@ -108,7 +108,7 @@ public class Util {
 				if( isStringNumero(s) ) {
 					valor = s;
 				}
-				if( valor != null ) {
+				if( valor != null && valor.length() > 7 ) {
 					if( valor.endsWith(".")) valor = valor.substring(0, valor.length()-1);
 					
 					json.put("processo", valor);
@@ -132,7 +132,7 @@ public class Util {
 				if( isStringNumero(s) ) {
 					valor = s;
 				}
-				if( valor != null ) {
+				if( valor != null && valor.length() > 7 ) {
 					if( valor.endsWith(".")) valor = valor.substring(0, valor.length()-1);
 					json.put("processo", valor);
 				}
@@ -188,11 +188,17 @@ public class Util {
 					}else {
 						String ss[] = s.split("\\.");
 						for(String nm: ss) {
-							if( !nm.toUpperCase().contains("PREGOI") ){
+							
+							if( !nm.toUpperCase().contains("PREGOEIR") ){
 								if( nm.toUpperCase().equals(nm)) {
+									nome = nm.trim();
+								}else {
 									nome = nm.trim();
 								}
 							}
+							if( isStringNumero(nm)) {
+								nome = null; 
+							}else if( nome == null ) nome = nm.trim();
 						}
 					}
 				}
@@ -238,10 +244,17 @@ public class Util {
 			int index = pos;
 			String s = "";
 			//buscar de traz para frente
-			while( index> 0 && index < dado.length() && (dado.charAt(--index) == dado.toUpperCase().charAt(index)) ) {
-				char c = dado.charAt(index);
+			while( index> 0 && index < dado.length() ) { //&& (dado.charAt(--index) == dado.toUpperCase().charAt(index)) ) {
+				System.out.print( dado.toUpperCase().charAt(index) );
+				char c = dado.charAt(--index);
 				
-				if( c == '.' || (!s.isEmpty() && c == '\n')) break;
+				if( c == '.' || (!s.isEmpty() && c == '\n')) {
+					if( s.trim().length() < 2) {
+						s = "";
+						continue;
+					}
+					break;
+				}
 				s= dado.charAt(index)+s;
 			}
 			nome = s.replaceAll(",", "");
