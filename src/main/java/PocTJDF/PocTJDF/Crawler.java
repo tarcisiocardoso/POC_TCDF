@@ -104,7 +104,7 @@ public class Crawler {
         	}
         	
             URL url = new URL("http://www.buriti.df.gov.br/ftp/" + sUrl);
-            Map<String, Object> params = new LinkedHashMap<>();
+            Map<String, Object> params = new LinkedHashMap<String, Object>();
 
             StringBuilder postData = new StringBuilder();
             for (Map.Entry<String, Object> param : params.entrySet()) {
