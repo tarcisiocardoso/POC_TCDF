@@ -235,7 +235,7 @@ public class LeitorGrupo {
 		}
 		
 		if( pos < 1000 && linhas.length > 1000) {
-			System.err.println(">>>PROBLEMA SEÇÃO III NÃO FOI ENCONTRADA NO ALGORITMO PADRÃO<<<");
+			System.err.println(">>>PROBLEMA SEÇÃO III NÃO FOI ENCONTRADA NO ALGORITMO PADRÃO "+App.arquivo.nome+" <<<");
 			for(int i=pos; i < linhas.length; i++) { // nunca a SEÇÃO III estará antes da linha 100
 				linha = linhas[i];
 				if( linha.startsWith("SEÇÃO III")) {
