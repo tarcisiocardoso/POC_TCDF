@@ -39,7 +39,7 @@ public class Crawler {
     public static Elements getLinksData(int ano, String mes) {
         try {
             URL url = new URL("http://www.buriti.df.gov.br/ftp/default.asp");
-            Map<String, Object> params = new LinkedHashMap<>();
+            Map<String, Object> params = new LinkedHashMap<String, Object>();
             params.put("Ano", String.valueOf(ano));
             params.put("Mes", mes);
 
