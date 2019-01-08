@@ -359,20 +359,24 @@ public class Util {
 				valor =s ;
 			}
 		}else if( dado.contains("R$") ) {
-			String arr[] = dado.split("R$");
-			
-			int pos = dado.indexOf("R$");
-			if( pos > 0 ) {
-				String s = dado.substring(pos+2, dado.length()).trim();
-				pos = s.indexOf(' ');
-				if( pos < 0 ) {
-					//TODO implementar quando não existe espaço em branco.
-					pos = s.length();
+			String arr[] = dado.split("R\\$");
+			if( arr.length > 2 ) {
+				String s = arr[arr.length-1];//dado.substring(pos+2, dado.length()).trim();
+				s = trataValor(s);
+				valor = s;				
+			}else {
+				int pos = dado.indexOf("R$");
+				if( pos > 0 ) {
+					String s = dado.substring(pos+2, dado.length()).trim();
+					pos = s.indexOf(' ');
+					if( pos < 0 ) {
+						//TODO implementar quando não existe espaço em branco.
+						pos = s.length();
+					}
+					valor = s.substring(0, pos).trim();
+					if( valor.endsWith(".")) valor = valor.substring(0, valor.length()-1 );
+					valor = trataValor(valor);
 				}
-				valor = s.substring(0, pos).trim();
-				if( valor.endsWith(".")) valor = valor.substring(0, valor.length()-1 );
-				valor = valor.split("\n")[0];
-				
 			}
 		}else if( dado.toUpperCase().contains("VALOR") ){
 			int pos = dado.toUpperCase().indexOf("VALOR")+5;
@@ -501,5 +505,10 @@ public class Util {
 			json.put("chamamento", s);
 		}
 	}
-
+	public String trataValor(String valor) {
+		String s = valor.replaceAll("[^0-9 , .]", "").trim();
+		if( s.endsWith(".")) s= s.substring(0, s.length()-1 );
+		if( s.endsWith(",")) s= s.substring(0, s.length()-1 );
+		return s;
+	}
 }

@@ -1,5 +1,6 @@
 package PocTJDF.PocTJDF.rules;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,9 @@ o Lote 01 de R$ 231.397,98.
 	 * @see PocTJDF.PocTJDF.rules.Regra#execute(PocTJDF.PocTJDF.App.Registro)
 	 */
 	public Regra execute(Registro reg) {
+		if( reg.conteudo.contains("PROTECTOR INDÚSTRIA E COMÉRCIO DE PRODUTOS MÉDICO")) {
+			System.out.println("xoxoxoxoxoox");
+		}
 		JSONObject json = new JSONObject();
 		String dado = reg.conteudo;
 		
@@ -94,7 +98,7 @@ PRISCILLA MOREIRA FALCÃO FIGUEIREDO
 				if( isItens ) {
 					if( isStringNumero(palavra)) {
 						if( palavra.contains(",")) {
-							jItens.put("valor", palavra);
+							jItens.put("valor", trataValor(palavra) );
 							if( lstItens.isEmpty() ) {
 								jEmpresa.append("itens", jItens );
 							}else {
@@ -200,7 +204,7 @@ PRISCILLA MOREIRA FALCÃO FIGUEIREDO
 				nome += " "+palavra;
 			}
 		}
-		if( !jEmpresa.isEmpty() && jEmpresa.has("cnpj") && jEmpresa.has("valor") ) {
+		if( !jEmpresa.isEmpty() && (jEmpresa.has("cnpj") || jEmpresa.has("valor")) ) {
 			if( !jEmpresa.has("itens") ) {
 				if( !lstItens.isEmpty() ) {
 					for(JSONObject item: lstItens ) {
@@ -214,8 +218,7 @@ PRISCILLA MOREIRA FALCÃO FIGUEIREDO
 			json.append("vencedores", jEmpresa);
 		}
 	}
-	
-	
+
 	private void montaVencedoras_old(JSONObject json, String dado) {
 		String arr[] = dado.toUpperCase().split("EMPRESA");
 		int tipoBusca =  0; //VENCEDOR
