@@ -282,7 +282,7 @@ public class Util {
 			String s = arr[ arr.length-1 ];
 			if( s.toUpperCase().equals(s)) {
 				//TODO colocar 
-				j.put("cargo", "pregoeiro >>fake<<");
+//				j.put("cargo", "pregoeiro >>fake<<");
 				j.put("nome", s.trim() );
 			}
 		}
@@ -336,8 +336,9 @@ public class Util {
 	}
 	public void montaValor(JSONObject json, String dado) {
 		String valor = null;
+		String arr[] = dado.split("R\\$");
 		
-		if( dado.toUpperCase().contains("VALOR TOTAL") ){
+		if( dado.toUpperCase().contains("VALOR TOTAL") && arr.length < 2 ){
 			int pos = dado.toUpperCase().indexOf("VALOR TOTAL")+10;
 			String s = dado.substring(pos, dado.length() );
 			pos = 0 ;
@@ -359,9 +360,13 @@ public class Util {
 				valor =s ;
 			}
 		}else if( dado.contains("R$") ) {
-			String arr[] = dado.split("R\\$");
+			
 			if( arr.length > 2 ) {
 				String s = arr[arr.length-1];//dado.substring(pos+2, dado.length()).trim();
+				if( s.length() < 40 && isStringNumero(s)) { // 40 numero cabalistico.
+					
+					s = s.replaceAll(" ", "");
+				}
 				s = s.trim().split(" ")[0];// pega o primeiro valor do array
 				s = trataValor(s);
 				valor = s;				

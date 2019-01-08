@@ -18,9 +18,7 @@ o Lote 01 de R$ 231.397,98.
 	 * @see PocTJDF.PocTJDF.rules.Regra#execute(PocTJDF.PocTJDF.App.Registro)
 	 */
 	public Regra execute(Registro reg) {
-		if( reg.conteudo.contains("PROTECTOR INDÚSTRIA E COMÉRCIO DE PRODUTOS MÉDICO")) {
-			System.out.println("xoxoxoxoxoox");
-		}
+		
 		JSONObject json = new JSONObject();
 		String dado = reg.conteudo;
 		
@@ -48,6 +46,9 @@ SERVIÇOS HOSPITALARES LTDA EPP- ME, CNPJ: 03.098.826/0001-23, itens: 02 (R$
 PRISCILLA MOREIRA FALCÃO FIGUEIREDO	 
 	 */
 	private void montaVencedoras(JSONObject json, String dado) {
+//		if( dado.contains("60.665.981/0009-75")) {
+//			System.out.println("xoxoxoxoxoox");
+//		}
 		int pos = dado.toUpperCase().indexOf("EMPRESA");
 		if( pos < 0) pos = dado.toUpperCase().indexOf("VENCEDOR");
 		
@@ -87,7 +88,7 @@ PRISCILLA MOREIRA FALCÃO FIGUEIREDO
 					isValor = false;
 					continue;
 				}				
-				if( palavra.toUpperCase().contains("ITENS") || palavra.toUpperCase().contains("ITEM")) {
+				if( palavra.toUpperCase().contains("ITENS") || palavra.toUpperCase().contains("ITEM") || palavra.toUpperCase().contains("LOTES")) {
 					isItens = true;
 					continue;
 				}
