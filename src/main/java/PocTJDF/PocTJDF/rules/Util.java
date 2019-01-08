@@ -362,6 +362,7 @@ public class Util {
 			String arr[] = dado.split("R\\$");
 			if( arr.length > 2 ) {
 				String s = arr[arr.length-1];//dado.substring(pos+2, dado.length()).trim();
+				s = s.trim().split(" ")[0];// pega o primeiro valor do array
 				s = trataValor(s);
 				valor = s;				
 			}else {
