@@ -280,7 +280,7 @@ public class Util {
 		if( j.isEmpty()) {
 			String arr[] = dado.split("\n");
 			String s = arr[ arr.length-1 ];
-			if( s.toUpperCase().equals(s)) {
+			if( s.toUpperCase().equals(s) && !isStringNumero(s)) {
 				//TODO colocar 
 //				j.put("cargo", "pregoeiro >>fake<<");
 				j.put("nome", s.trim() );

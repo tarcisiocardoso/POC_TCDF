@@ -43,12 +43,15 @@ public class LeitorConteudo {
 			SubGrupo proximoSub = proximoSubGrupo(++index);
 			int linhaProximoSub = getLinhaProximoSubGrupo(proximoSub);
 			boolean isPrimeiraLinha = true;
+			if( blocoDeDado != null ) {
+				montaDadoJson( blocoDeDado, sub );
+			}
 			blocoDeDado = null;
 			for( int i= sub.linha+1; i< linhaProximoSub && i < linhas.length; i++) {
 				linha = linhas[i];
-//				if( linha.contains("05/2017")) {
-//					System.out.println("....");
-//				}
+				if( linha.contains("18.544.281/0001-09")) {
+					System.out.println("....");
+				}
 				if( isPrimeiraLinha ) {
 					blocoDeDado = new BlocoDeDado();
 					isPrimeiraLinha = false;
@@ -558,7 +561,14 @@ public class LeitorConteudo {
 					Integer.parseInt(last.trim());// indica que a linha tem ano: 2018
 				}catch( Exception e) {
 					if( linha.toUpperCase().equals(linha)) {
-						return true;
+						boolean isFim = true;
+						for(String s: LeitorSubGrupo.palavraRestritiva ) {
+							if( linha.indexOf(s)>= 0 ) {
+								isFim = false;
+								break;
+							}
+						}
+						if( isFim) return true;
 					}
 				}
 			}

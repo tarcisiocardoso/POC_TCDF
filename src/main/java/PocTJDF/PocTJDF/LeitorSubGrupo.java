@@ -11,7 +11,7 @@ public class LeitorSubGrupo {
 	String linha = null;
 	public String[] linhas;
 	
-	String palavraRestritiva[] = new String[]{
+	static String palavraRestritiva[] = new String[]{
 		"LICITAÇÃO", "EXTRATO", "AVISO", "PREGÃO", "RETIFICAÇÃO",
 		"ADITIVO", "__", "LEIA-SE", "EDITAL", "CNPJ", "OBJETO", "ENTREGA", "RECEBIMENTO",
 		"PROCESSO", "CHAMAMENTO", "TERMO", "RESULTADO", "PROGRAMA", "ADULTO", "R$", "NÃO", "CM ", "RECONHECIMENTO",
@@ -27,7 +27,7 @@ public class LeitorSubGrupo {
 //			}
 			for( int i= init; i< g.linha; i++) {
 				linha = linhas[i];
-//				if( linha.contains("05/2017")) {
+//				if( linha.contains("18.544.281/0001-09")) {
 //					System.out.println("....");
 //				}
 				if( linha.toUpperCase().equals(linha )) {

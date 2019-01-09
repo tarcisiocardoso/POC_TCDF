@@ -18,7 +18,9 @@ o Lote 01 de R$ 231.397,98.
 	 * @see PocTJDF.PocTJDF.rules.Regra#execute(PocTJDF.PocTJDF.App.Registro)
 	 */
 	public Regra execute(Registro reg) {
-		
+		if( reg.conteudo.contains("18.544.281/0001-09")) {
+			System.out.println("xoxoxoxoxoox");
+		}
 		JSONObject json = new JSONObject();
 		String dado = reg.conteudo;
 		
@@ -33,190 +35,223 @@ o Lote 01 de R$ 231.397,98.
 
 		return null;
 	}
-	/*
-PREGÃO ELETRÔNICO POR SRP Nº 325/2017
-Pregoeira Substituta
-A Pregoeira da Central de Compras/SUAG da Secretaria de Estado de Saúde do Distrito
-Federal comunica que, no Pregão Eletrônico por SRP nº 325/2017, sagraram-se vencedoras
-(empresas, itens, valores): 
-BRAKKO COMÉRCIO E IMPORTAÇÃO LTDA, CNPJ:01.085.207/0001-79, itens: 01 (R$ 780,00), 03 (R$ 970,00) e 05 (R$ 1.065,00); POINTER
-SERVIÇOS HOSPITALARES LTDA EPP- ME, CNPJ: 03.098.826/0001-23, itens: 02 (R$
-780,00), 04 (R$ 970,00) e 06 (R$ 1.065,00); perfazendo o valor total licitado de R$
-1.632,500,00. Os itens 07 e 08 fracassaram.
-PRISCILLA MOREIRA FALCÃO FIGUEIREDO	 
-	 */
+	
 	private void montaVencedoras(JSONObject json, String dado) {
-//		if( dado.contains("60.665.981/0009-75")) {
-//			System.out.println("xoxoxoxoxoox");
-//		}
+		
 		int pos = dado.toUpperCase().indexOf("EMPRESA");
 		if( pos < 0) pos = dado.toUpperCase().indexOf("VENCEDOR");
 		
 		if( pos < 0 ) throw new RuntimeException("problema de tipo. Não parece ser resultado de pregão.");
-		
+//		
 		String s = dado.substring(pos, dado.length());
 		s = s.replaceAll("\n", " ");
-		boolean start = false;
-		boolean isBuscaCnpj = false;
-		boolean isItens = false;
-		boolean isValor = false;
-		String nome = "";		
-		String valor = "";
+//		boolean start = false;
+//		boolean isBuscaCnpj = false;
+//		boolean isItens = false;
+//		boolean isValor = false;
+//		String nome = "";		
+//		String valor = "";
 		String arr[] = s.split(" ");
-//		int qtdCnpj = dado.toUpperCase().split("CNPJ").length;
-		
+////		int qtdCnpj = dado.toUpperCase().split("CNPJ").length;
+//		
+//		JSONObject jEmpresa = new JSONObject();
+//		JSONObject jItens = new JSONObject();
+//		List<JSONObject> lstItens = new ArrayList<JSONObject>();
+//		
+//		for(String palavra: arr) {
+//			if( palavra.isEmpty() )continue;
+//			if( palavra.contains(":")) {
+//				if( !start) {
+//					start = true;
+//					continue;
+//				}
+//			}else if( palavra.toUpperCase().contains("ITENS")  ) {
+//				if( !start) {
+//					start = true;
+//				}
+//			}
+//			if( start ) {
+//				if (palavra.toUpperCase().contains("CNPJ")) {
+//					isBuscaCnpj = true;
+//					isItens = false;
+//					isValor = false;
+//					continue;
+//				}				
+//				if( palavra.toUpperCase().contains("ITENS") || palavra.toUpperCase().contains("ITEM") || palavra.toUpperCase().contains("LOTES")) {
+//					isItens = true;
+//					continue;
+//				}
+//				if( palavra.contains("$") || palavra.toUpperCase().contains("VALOR")) {
+//					isValor = true;
+//					continue;
+//				}
+//				if( isItens ) {
+//					if( isStringNumero(palavra)) {
+//						if( palavra.contains(",")) {
+//							jItens.put("valor", trataValor(palavra) );
+//							if( lstItens.isEmpty() ) {
+//								jEmpresa.append("itens", jItens );
+//							}else {
+//								lstItens.add(jItens);
+//								for(JSONObject item: lstItens ) {
+//									item.put("valor", palavra);
+//									jEmpresa.append("itens", item );	
+//								}
+//							}
+//							jItens = new JSONObject();
+//							isBuscaCnpj = false;
+//							isValor = false;
+//							valor = palavra;
+//						}else {
+//							if( lstItens.isEmpty() ) {
+//								jItens.put("item", palavra);
+//							}else {
+//								jItens.put("item", palavra);
+//								lstItens.add( jItens);
+//								jItens = new JSONObject();// novo item, mesmo tendo uma lista de itens. Só para não dar problema.
+//							}
+//							continue;
+//						}
+//					}else if( palavra.contains("$")) {
+//						isValor = true;
+//						continue;
+//					}else if( palavra.equalsIgnoreCase("e")) {
+//						if( !jItens.isEmpty() ) {
+//							lstItens.add( jItens);
+//							jItens = new JSONObject();// novo item, mesmo tendo uma lista de itens. Só para não dar problema.
+//							continue;
+//						}
+//					}
+//					if( palavra.endsWith(";") || palavra.endsWith(".") ) {
+//						if( !jEmpresa.isEmpty() && jEmpresa.has("cnpj") && jEmpresa.has("valor") ) {
+//							if( !jEmpresa.has("itens") ) {
+//								if( !lstItens.isEmpty() ) {
+//									for(JSONObject item: lstItens ) {
+//										item.put("valor", valor );
+//										jEmpresa.append("itens", item );	
+//									}
+//								}else if( !jItens.isEmpty() ) {
+//									jEmpresa.append("itens", jItens );
+//								}
+//							}
+//							json.append("vencedores", jEmpresa);
+//							jEmpresa = new JSONObject();
+//							jItens = new JSONObject();
+//							lstItens = new ArrayList<JSONObject>();
+//							isBuscaCnpj = false;
+//							isValor = false;
+//							isBuscaCnpj = false;
+//							nome = ""; valor = "";
+//							continue;
+//						}
+//					}
+//				}
+//				if( isValor ) {
+//					if( isStringNumero(palavra) && palavra.contains(",")) {
+//						isValor = false;
+//						if( !isItens ) {
+//							jEmpresa.put("valor", palavra);
+//						}
+//						valor = palavra;
+//					}
+//				}
+//				if( isBuscaCnpj ){
+//					if( isStringNumero(palavra) ) {
+//						isBuscaCnpj = false;
+//						jEmpresa.put("cnpj", palavra);
+//						if( isNomeValido(nome ) ) {
+//							jEmpresa.put("nome", nome.trim());
+//							nome = "";
+//							continue;
+//						}
+//					}
+//				}
+//				if( palavra.endsWith(".") || palavra.endsWith(";")) {
+//					if( !jEmpresa.isEmpty() && jEmpresa.has("cnpj") && jEmpresa.has("valor") && !jItens.isEmpty()) {
+//						if( !jEmpresa.has("itens") ) {
+//							if( !lstItens.isEmpty() ) {
+//								for(JSONObject item: lstItens ) {
+//									item.put("valor", valor );
+//									jEmpresa.append("itens", item );	
+//								}
+//							}else if( !jItens.isEmpty() ) {
+//								if( !jItens.has("valor")) jItens.put("valor", valor);
+//								jEmpresa.append("itens", jItens );
+//							}
+//						}
+//						json.append("vencedores", jEmpresa);
+//						jEmpresa = new JSONObject();
+//						lstItens = new ArrayList<JSONObject>();
+//						jItens = new JSONObject();
+//						isBuscaCnpj = false;
+//						isValor = false;
+//						isBuscaCnpj = false;
+//						nome = ""; valor = "";
+//						continue;
+//					}
+//				}
+//				if (nome.isEmpty() && palavra.length() < 2) continue;
+//				nome += " "+palavra;
+//			}
+//		}
+//		if( !jEmpresa.isEmpty() && (jEmpresa.has("cnpj") || jEmpresa.has("valor")) ) {
+//			if( !jEmpresa.has("itens") ) {
+//				if( !lstItens.isEmpty() ) {
+//					for(JSONObject item: lstItens ) {
+//						item.put("valor", valor );
+//						jEmpresa.append("itens", item );	
+//					}
+//				}else if( !jItens.isEmpty() ) {
+//					jEmpresa.append("itens", jItens );
+//				}
+//			}
+//			json.append("vencedores", jEmpresa);
+//		}else {
+//			if( dado.split("CNPJ").length > 3 ) {
+				montaVencedorasExcessao(json, arr);
+//			}
+//		}
+	}
+
+	private void montaVencedorasExcessao(JSONObject json, String arr[]) {
+		boolean start = false;
+		boolean isValor = false;
 		JSONObject jEmpresa = new JSONObject();
 		JSONObject jItens = new JSONObject();
-		List<JSONObject> lstItens = new ArrayList<JSONObject>();
-		
 		for(String palavra: arr) {
 			if( palavra.isEmpty() )continue;
-			if( palavra.contains(":")) {
-				if( !start) {
-					start = true;
-					continue;
+			if( palavra.contains("CNPJ")) {
+				start = true;
+				if( !jEmpresa.isEmpty()) {
+					json.append("vencedores", jEmpresa);
+					jEmpresa = new JSONObject();
 				}
-			}else if( palavra.toUpperCase().contains("ITENS")  ) {
-				if( !start) {
-					start = true;
-				}
+				continue;
 			}
-			if( start ) {
-				if (palavra.toUpperCase().contains("CNPJ")) {
-					isBuscaCnpj = true;
-					isItens = false;
-					isValor = false;
-					continue;
-				}				
-				if( palavra.toUpperCase().contains("ITENS") || palavra.toUpperCase().contains("ITEM") || palavra.toUpperCase().contains("LOTES")) {
-					isItens = true;
-					continue;
-				}
-				if( palavra.contains("$") || palavra.toUpperCase().contains("VALOR")) {
+			if( start) {
+				if( palavra.contains("R$")) {
 					isValor = true;
 					continue;
 				}
-				if( isItens ) {
-					if( isStringNumero(palavra)) {
-						if( palavra.contains(",")) {
-							jItens.put("valor", trataValor(palavra) );
-							if( lstItens.isEmpty() ) {
-								jEmpresa.append("itens", jItens );
-							}else {
-								lstItens.add(jItens);
-								for(JSONObject item: lstItens ) {
-									item.put("valor", palavra);
-									jEmpresa.append("itens", item );	
-								}
-							}
-							jItens = new JSONObject();
-							isBuscaCnpj = false;
-							isValor = false;
-							valor = palavra;
-						}else {
-							if( lstItens.isEmpty() ) {
-								jItens.put("item", palavra);
-							}else {
-								jItens.put("item", palavra);
-								lstItens.add( jItens);
-								jItens = new JSONObject();// novo item, mesmo tendo uma lista de itens. Só para não dar problema.
-							}
-							continue;
-						}
-					}else if( palavra.contains("$")) {
-						isValor = true;
-						continue;
-					}else if( palavra.equals("e")) {
-						if( !jItens.isEmpty() ) {
-							lstItens.add( jItens);
-							jItens = new JSONObject();// novo item, mesmo tendo uma lista de itens. Só para não dar problema.
-							continue;
-						}
-					}
-					if( palavra.endsWith(";") || palavra.endsWith(".") ) {
-						if( !jEmpresa.isEmpty() && jEmpresa.has("cnpj") && jEmpresa.has("valor") ) {
-							if( !jEmpresa.has("itens") ) {
-								if( !lstItens.isEmpty() ) {
-									for(JSONObject item: lstItens ) {
-										item.put("valor", valor );
-										jEmpresa.append("itens", item );	
-									}
-								}else if( !jItens.isEmpty() ) {
-									jEmpresa.append("itens", jItens );
-								}
-							}
-							json.append("vencedores", jEmpresa);
-							jEmpresa = new JSONObject();
-							jItens = new JSONObject();
-							lstItens = new ArrayList<JSONObject>();
-							isBuscaCnpj = false;
-							isValor = false;
-							isBuscaCnpj = false;
-							nome = ""; valor = "";
-							continue;
-						}
-					}
-				}
 				if( isValor ) {
 					if( isStringNumero(palavra) && palavra.contains(",")) {
+						palavra = trataValor(palavra);
 						isValor = false;
-						if( !isItens ) {
-							jEmpresa.put("valor", palavra);
-						}
-						valor = palavra;
-					}
-				}
-				if( isBuscaCnpj ){
-					if( isStringNumero(palavra) ) {
-						isBuscaCnpj = false;
-						jEmpresa.put("cnpj", palavra);
-						if( isNomeValido(nome ) ) {
-							jEmpresa.put("nome", nome.trim());
-							nome = "";
-							continue;
-						}
-					}
-				}
-				if( palavra.endsWith(".") || palavra.endsWith(";")) {
-					if( !jEmpresa.isEmpty() && jEmpresa.has("cnpj") && jEmpresa.has("valor") ) {
-						if( !jEmpresa.has("itens") ) {
-							if( !lstItens.isEmpty() ) {
-								for(JSONObject item: lstItens ) {
-									item.put("valor", valor );
-									jEmpresa.append("itens", item );	
-								}
-							}else if( !jItens.isEmpty() ) {
-								if( !jItens.has("valor")) jItens.put("valor", valor);
-								jEmpresa.append("itens", jItens );
-							}
-						}
-						json.append("vencedores", jEmpresa);
-						jEmpresa = new JSONObject();
-						lstItens = new ArrayList<JSONObject>();
+						jItens.put("valor", trataValor(palavra) );
+						jEmpresa.append("itens", jItens );
 						jItens = new JSONObject();
-						isBuscaCnpj = false;
-						isValor = false;
-						isBuscaCnpj = false;
-						nome = ""; valor = "";
-						continue;
 					}
+				}else if( isStringNumero(palavra) && palavra.contains("-")) {
+					if( palavra.endsWith(",")) palavra = palavra.substring(0, palavra.length()-1);
+					jEmpresa.put("cnpj", palavra);
+				}else if( isStringNumero(palavra) ) {
+					jItens.put("item", palavra);
 				}
-				if (nome.isEmpty() && palavra.length() < 2) continue;
-				nome += " "+palavra;
 			}
 		}
-		if( !jEmpresa.isEmpty() && (jEmpresa.has("cnpj") || jEmpresa.has("valor")) ) {
-			if( !jEmpresa.has("itens") ) {
-				if( !lstItens.isEmpty() ) {
-					for(JSONObject item: lstItens ) {
-						item.put("valor", valor );
-						jEmpresa.append("itens", item );	
-					}
-				}else if( !jItens.isEmpty() ) {
-					jEmpresa.append("itens", jItens );
-				}
-			}
+		if( !jEmpresa.isEmpty()) {
 			json.append("vencedores", jEmpresa);
+			jEmpresa = new JSONObject();
 		}
 	}
 
